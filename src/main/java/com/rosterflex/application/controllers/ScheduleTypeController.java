@@ -2,6 +2,8 @@ package com.rosterflex.application.controllers;
 
 
 import com.rosterflex.application.models.ScheduleType;
+import com.rosterflex.application.services.ScheduleTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +17,12 @@ import java.util.List;
 @RequestMapping("/scheduleTypes")
 public class ScheduleTypeController {
 
+    @Autowired
+    private ScheduleTypeService scheduleTypeService;
+
     @GetMapping
     public ResponseEntity<List<ScheduleType>> findAll(){
-        List<ScheduleType> list = new ArrayList<>();
-        list.add(new ScheduleType(1L, 12.0, 36.0, ChronoUnit.HOURS, 440, 1));
-        list.add(new ScheduleType(2L, 6.0, 1.0, ChronoUnit.DAYS, 440, 1));
+        List<ScheduleType> list = scheduleTypeService.findAll();
         return ResponseEntity.ok().body(list);
     }
 

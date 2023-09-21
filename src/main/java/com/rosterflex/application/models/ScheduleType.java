@@ -14,6 +14,7 @@ public class ScheduleType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private Double workedTime;
     private Double freeTime;
     private ChronoUnit unity;
@@ -23,8 +24,9 @@ public class ScheduleType implements Serializable {
     public ScheduleType() {
     }
 
-    public ScheduleType(Long id, Double workedTime, Double freeTime, ChronoUnit unity, Integer monthlyHours, Integer daysOff) {
+    public ScheduleType(Long id, String name, Double workedTime, Double freeTime, ChronoUnit unity, Integer monthlyHours, Integer daysOff) {
         this.id = id;
+        this.name = name;
         this.workedTime = workedTime;
         this.freeTime = freeTime;
         this.unity = unity;
@@ -38,6 +40,14 @@ public class ScheduleType implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Double getWorkedTime() {
@@ -88,6 +98,7 @@ public class ScheduleType implements Serializable {
         ScheduleType that = (ScheduleType) o;
 
         if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(name, that.name)) return false;
         if (!Objects.equals(workedTime, that.workedTime)) return false;
         if (!Objects.equals(freeTime, that.freeTime)) return false;
         if (unity != that.unity) return false;
@@ -98,6 +109,7 @@ public class ScheduleType implements Serializable {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (workedTime != null ? workedTime.hashCode() : 0);
         result = 31 * result + (freeTime != null ? freeTime.hashCode() : 0);
         result = 31 * result + (unity != null ? unity.hashCode() : 0);

@@ -3,6 +3,7 @@ package com.rosterflex.application.services;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
+import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class ScheduleTypeService {
     @Transactional(readOnly = true)
     public ScheduleTypeDTO findById(Long id) {
         Optional<ScheduleType> obj = scheduleTypeRepository.findById(id);
-        ScheduleType scheduleType = obj.get();
+        ScheduleType scheduleType = obj.orElseThrow(() -> new ResourceNotFoundException("Tipo de escala não localizada."));
         return new ScheduleTypeDTO(scheduleType);
     }
 }

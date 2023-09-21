@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,5 +21,12 @@ public class ScheduleTypeService {
     public List<ScheduleTypeDTO> findAll(){
         List<ScheduleType> list = scheduleTypeRepository.findAll();
         return list.stream().map(x -> new ScheduleTypeDTO(x)).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public ScheduleTypeDTO findById(Long id) {
+        Optional<ScheduleType> obj = scheduleTypeRepository.findById(id);
+        ScheduleType scheduleType = obj.get();
+        return new ScheduleTypeDTO(scheduleType);
     }
 }

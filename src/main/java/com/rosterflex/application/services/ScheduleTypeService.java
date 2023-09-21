@@ -30,4 +30,21 @@ public class ScheduleTypeService {
         ScheduleType scheduleType = obj.orElseThrow(() -> new ResourceNotFoundException("Tipo de escala não localizada."));
         return new ScheduleTypeDTO(scheduleType);
     }
+
+    @Transactional
+    public ScheduleTypeDTO insert(ScheduleTypeDTO dto) {
+        ScheduleType scheduleType = new ScheduleType();
+        copyDtoToEntity(dto, scheduleType);
+        scheduleType = scheduleTypeRepository.save(scheduleType);
+        return new ScheduleTypeDTO(scheduleType);
+    }
+
+    private void copyDtoToEntity(ScheduleTypeDTO dto, ScheduleType entity){
+        entity.setName(dto.getName());
+        entity.setDaysOff(dto.getDaysOff());
+        entity.setWorkedTime(dto.getWorkedTime());
+        entity.setFreeTime(dto.getFreeTime());
+        entity.setMonthlyHours(dto.getMonthlyHours());
+        entity.setUnity(dto.getUnity());
+    }
 }

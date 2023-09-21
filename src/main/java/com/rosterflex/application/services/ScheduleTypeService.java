@@ -4,6 +4,7 @@ import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,9 @@ public class ScheduleTypeService {
 
     @Autowired
     private ScheduleTypeRepository scheduleTypeRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
     public List<ScheduleTypeDTO> findAll(){
@@ -33,18 +37,8 @@ public class ScheduleTypeService {
 
     @Transactional
     public ScheduleTypeDTO insert(ScheduleTypeDTO dto) {
-        ScheduleType scheduleType = new ScheduleType();
-        copyDtoToEntity(dto, scheduleType);
+        ScheduleType scheduleType = modelMapper.map(dto, ScheduleType.class);
         scheduleType = scheduleTypeRepository.save(scheduleType);
         return new ScheduleTypeDTO(scheduleType);
-    }
-
-    private void copyDtoToEntity(ScheduleTypeDTO dto, ScheduleType entity){
-        entity.setName(dto.getName());
-        entity.setDaysOff(dto.getDaysOff());
-        entity.setWorkedTime(dto.getWorkedTime());
-        entity.setFreeTime(dto.getFreeTime());
-        entity.setMonthlyHours(dto.getMonthlyHours());
-        entity.setUnity(dto.getUnity());
     }
 }

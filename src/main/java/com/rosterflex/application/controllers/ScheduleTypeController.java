@@ -1,6 +1,7 @@
 package com.rosterflex.application.controllers;
 
 
+import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.services.ScheduleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ public class ScheduleTypeController {
     private ScheduleTypeService scheduleTypeService;
 
     @GetMapping
-    public ResponseEntity<List<ScheduleType>> findAll(){
-        List<ScheduleType> list = scheduleTypeService.findAll();
+    public ResponseEntity<List<ScheduleTypeDTO>> findAll(){
+        List<ScheduleTypeDTO> list = scheduleTypeService.findAll();
         return ResponseEntity.ok().body(list);
     }
 

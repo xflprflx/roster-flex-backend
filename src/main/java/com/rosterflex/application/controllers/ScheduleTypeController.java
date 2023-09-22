@@ -38,6 +38,12 @@ public class ScheduleTypeController {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ScheduleTypeDTO> update(@PathVariable Long id, @RequestBody ScheduleTypeDTO dto){
+        dto = scheduleTypeService.update(id, dto);
+        return ResponseEntity.ok().body(dto);
+    }
+
 
 
 

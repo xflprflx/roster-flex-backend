@@ -57,4 +57,17 @@ public class ScheduleTypeService {
             throw new ResourceNotFoundException(String.format("Id %d não encontrado.", id));
         }
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!scheduleTypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+        try {
+            scheduleTypeRepository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
+    }
 }

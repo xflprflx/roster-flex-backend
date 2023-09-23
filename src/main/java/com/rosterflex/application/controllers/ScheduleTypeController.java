@@ -43,4 +43,10 @@ public class ScheduleTypeController {
         dto = scheduleTypeService.update(id, dto);
         return ResponseEntity.ok().body(dto);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        scheduleTypeService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

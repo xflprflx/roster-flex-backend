@@ -16,11 +16,11 @@ Tópicos
 <h1 align="center">Roster Flex</h1>
 <a id="descricao-da-aplicacao"></a>
 
-## Descrição da aplicação
+## Descrição da Aplicação
 <p align="center">Roster Flex é uma aplicação web que simplifica o gerenciamento de escalas de trabalho.<br>Crie, programe e monitore as escalas da sua equipe com facilidade.<br>Economize tempo e mantenha sua equipe bem escalada de forma eficaz.</p>
 
 <a id="descricao-do-projeto"></a>
-## Descrição do projeto 
+## Descrição do Projeto 
 <p align="center">Neste projeto será desenvolvido o backend da aplicação. Deixaremos o link o repositório do frontend tão logo o mesmo for criado.</p>
 
 <a id="tecnologias-utilizadas"></a>

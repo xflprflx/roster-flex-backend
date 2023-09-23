@@ -3,11 +3,14 @@ package com.rosterflex.application.services;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
+import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -47,8 +50,7 @@ public class ScheduleTypeService {
     public ScheduleTypeDTO update(Long id, ScheduleTypeDTO dto) {
         try {
             ScheduleType scheduleType = scheduleTypeRepository.getReferenceById(id);
-            scheduleType = modelMapper.map(dto, ScheduleType.class);
-            scheduleType.setId(id);
+            modelMapper.map(dto, scheduleType.getClass());
             scheduleType = scheduleTypeRepository.save(scheduleType);
             return new ScheduleTypeDTO(scheduleType);
         }catch (EntityNotFoundException e){

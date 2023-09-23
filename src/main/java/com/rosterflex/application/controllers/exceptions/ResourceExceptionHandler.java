@@ -1,6 +1,7 @@
 package com.rosterflex.application.controllers.exceptions;
 
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

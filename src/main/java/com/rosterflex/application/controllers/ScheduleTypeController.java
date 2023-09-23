@@ -43,15 +43,4 @@ public class ScheduleTypeController {
         dto = scheduleTypeService.update(id, dto);
         return ResponseEntity.ok().body(dto);
     }
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -10,14 +10,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleTypeService {
@@ -29,8 +27,8 @@ public class ScheduleTypeService {
     private ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public Page<ScheduleTypeDTO> findAllPaged(PageRequest pageRequest){
-        Page<ScheduleType> page = scheduleTypeRepository.findAll(pageRequest);
+    public Page<ScheduleTypeDTO> findAllPaged(Pageable pageable){
+        Page<ScheduleType> page = scheduleTypeRepository.findAll(pageable);
         return page.map(x -> new ScheduleTypeDTO(x));
     }
 

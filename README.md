@@ -7,21 +7,8 @@
 <!--ts-->
    * [Descrição da Aplicação](#descricao-da-aplicacao)
    * [Descrição do Projeto](#descricao-do-projeto)
+   * [Sessão de Créditos](#sessao-de-creditos)
 <!--te-->
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
-<h1>Teste</h1>
 
 # Roster Flex 
 <a id="descricao-da-aplicacao"></a>
@@ -49,6 +36,6 @@
 
 
 
-
+<a id="sessao-de-creditos"></a>
 ## Sessão de créditos
 - Arte do banner (à direita): <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-gerenciamento-de-tempo_7079478.htm#query=schedule&position=16&from_view=search&track=sph">Imagem de storyset</a> no Freepik

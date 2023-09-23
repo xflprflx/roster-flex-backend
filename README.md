@@ -4,8 +4,9 @@
 <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
 </p>
 
-
-
+# Roster Flex 
+## Descrição do Projeto
+<p align="center">Roster Flex é uma aplicação web que simplifica o gerenciamento de escalas de trabalho. Crie, programe e monitore as escalas da sua equipe com facilidade. Economize tempo e mantenha sua equipe bem escalada de forma eficaz.</p>
 
 
 

@@ -4,6 +4,10 @@ package com.rosterflex.application.controllers;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.services.ScheduleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,9 +23,14 @@ public class ScheduleTypeController {
     private ScheduleTypeService scheduleTypeService;
 
     @GetMapping
-    public ResponseEntity<List<ScheduleTypeDTO>> findAll(){
-        List<ScheduleTypeDTO> list = scheduleTypeService.findAll();
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<Page<ScheduleTypeDTO>> findAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction,
+            @RequestParam(value = "orderBy", defaultValue = "name") String orderBy){
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        Page<ScheduleTypeDTO> resultPage = scheduleTypeService.findAllPaged((pageRequest));
+        return ResponseEntity.ok().body(resultPage);
     }
 
     @GetMapping(value = "/{id}")

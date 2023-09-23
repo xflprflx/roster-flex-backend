@@ -9,6 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +29,9 @@ public class ScheduleTypeService {
     private ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public List<ScheduleTypeDTO> findAll(){
-        List<ScheduleType> list = scheduleTypeRepository.findAll();
-        return list.stream().map(x -> new ScheduleTypeDTO(x)).collect(Collectors.toList());
+    public Page<ScheduleTypeDTO> findAllPaged(PageRequest pageRequest){
+        Page<ScheduleType> page = scheduleTypeRepository.findAll(pageRequest);
+        return page.map(x -> new ScheduleTypeDTO(x));
     }
 
     @Transactional(readOnly = true)

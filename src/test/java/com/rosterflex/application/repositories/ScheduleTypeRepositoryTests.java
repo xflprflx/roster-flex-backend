@@ -17,11 +17,13 @@ public class ScheduleTypeRepositoryTests {
     private ScheduleTypeRepository scheduleTypeRepository;
 
     private long existingId;
+    private long nonExistingId;
     private long countTotalScheduleTypes;
 
     @BeforeEach
     void setUp() throws Exception{
         existingId = 1L;
+        nonExistingId = 1000L;
         countTotalScheduleTypes = 3L;
     }
 
@@ -42,8 +44,14 @@ public class ScheduleTypeRepositoryTests {
     }
 
     @Test
-    public void findByIdShouldReturnNonEmptyOptionalWhenIdExists(){
-        Optional<ScheduleType> scheduleType = scheduleTypeRepository.findById(existingId);
-        Assertions.assertTrue(scheduleType.isPresent());
+    public void findByIdShouldReturnNonEmptyOptionalWhenIdExists() {
+        Optional<ScheduleType> result = scheduleTypeRepository.findById(existingId);
+        Assertions.assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void findByIdShouldReturnEmptyOptionalWhenIdDoesNotExist() {
+        Optional<ScheduleType> result = scheduleTypeRepository.findById(nonExistingId);
+        Assertions.assertTrue(result.isEmpty());
     }
 }

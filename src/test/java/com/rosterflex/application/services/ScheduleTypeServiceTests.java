@@ -72,6 +72,13 @@ public class ScheduleTypeServiceTests {
     }
 
     @Test
+    public void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            scheduleTypeService.findById(nonExistingId);
+        });
+    }
+
+    @Test
     public void updateShouldReturnProductDTOWhenIdExists() {
         ScheduleTypeDTO result = scheduleTypeService.update(existingId, scheduleTypeDTO);
         Assertions.assertNotNull(result);

@@ -1,18 +1,22 @@
 package com.rosterflex.application.services;
 
+import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
+import com.rosterflex.application.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.ResourceAccessException;
+
+import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 public class ScheduleTypeServiceTests {
@@ -23,12 +27,12 @@ public class ScheduleTypeServiceTests {
     @Mock
     private ScheduleTypeRepository scheduleTypeRepository;
 
-
-
     private long existingId;
     private long nonExistingId;
     private long dependentId;
     private long countTotalScheduleTypes;
+    private PageImpl<ScheduleType> page;
+    private ScheduleType scheduleType;
 
     @BeforeEach
     void setUp() throws Exception{
@@ -36,12 +40,18 @@ public class ScheduleTypeServiceTests {
         nonExistingId = 1000L;
         dependentId = 5L;
         countTotalScheduleTypes = 3L;
+        scheduleType = Factory.createScheduleType();
+        page = new PageImpl<>(List.of(scheduleType));
 
         Mockito.doNothing().when(scheduleTypeRepository).deleteById(existingId);
         Mockito.doThrow(DataIntegrityViolationException.class).when(scheduleTypeRepository).deleteById(dependentId);
         Mockito.when(scheduleTypeRepository.existsById(existingId)).thenReturn(true);
         Mockito.when(scheduleTypeRepository.existsById(nonExistingId)).thenReturn(false);
         Mockito.when(scheduleTypeRepository.existsById(dependentId)).thenReturn(true);
+        Mockito.when(scheduleTypeRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+        Mockito.when(scheduleTypeRepository.save(ArgumentMatchers.any())).thenReturn(scheduleType);
+        Mockito.when(scheduleTypeRepository.findById(existingId)).thenReturn(Optional.of(scheduleType));
+        Mockito.when(scheduleTypeRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
     }
 

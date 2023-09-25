@@ -1,5 +1,6 @@
 package com.rosterflex.application.services;
 
+import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
@@ -11,10 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,8 +56,16 @@ public class ScheduleTypeServiceTests {
         Mockito.when(scheduleTypeRepository.save(ArgumentMatchers.any())).thenReturn(scheduleType);
         Mockito.when(scheduleTypeRepository.findById(existingId)).thenReturn(Optional.of(scheduleType));
         Mockito.when(scheduleTypeRepository.findById(nonExistingId)).thenReturn(Optional.empty());
-
     }
+
+    @Test
+    public void findAllPagedShouldReturnPage() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ScheduleTypeDTO> result = scheduleTypeService.findAllPaged(pageable);
+        Assertions.assertNotNull(result);
+        Mockito.verify(scheduleTypeRepository, Mockito.times(1)).findAll(pageable);
+    }
+
 
     @Test
     public void deleteShouldDoNothingWhenIdExists(){

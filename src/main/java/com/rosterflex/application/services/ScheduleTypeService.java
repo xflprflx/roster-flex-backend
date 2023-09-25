@@ -6,6 +6,7 @@ import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -50,10 +51,10 @@ public class ScheduleTypeService {
     public ScheduleTypeDTO update(Long id, ScheduleTypeDTO dto) {
         try {
             ScheduleType scheduleType = scheduleTypeRepository.getReferenceById(id);
-            modelMapper.map(dto, scheduleType.getClass());
-            scheduleType = scheduleTypeRepository.save(scheduleType);
+            modelMapper.map(dto, scheduleType);
+            scheduleTypeRepository.save(scheduleType);
             return new ScheduleTypeDTO(scheduleType);
-        }catch (EntityNotFoundException e){
+        } catch (MappingException | EntityNotFoundException e) {
             throw new ResourceNotFoundException(String.format("Id %d não encontrado.", id));
         }
     }

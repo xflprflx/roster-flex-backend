@@ -6,11 +6,17 @@ import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import com.rosterflex.application.tests.Factory;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.modelmapper.MappingException;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,7 +24,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,12 +36,16 @@ public class ScheduleTypeServiceTests {
     @Mock
     private ScheduleTypeRepository scheduleTypeRepository;
 
+    @Mock
+    private ModelMapper modelMapper;
+
     private long existingId;
     private long nonExistingId;
     private long dependentId;
     private long countTotalScheduleTypes;
     private PageImpl<ScheduleType> page;
     private ScheduleType scheduleType;
+    private ScheduleTypeDTO scheduleTypeDTO;
 
     @BeforeEach
     void setUp() throws Exception{
@@ -45,6 +54,7 @@ public class ScheduleTypeServiceTests {
         dependentId = 5L;
         countTotalScheduleTypes = 3L;
         scheduleType = Factory.createScheduleType();
+        scheduleTypeDTO = Factory.createScheduleTypeDTO();
         page = new PageImpl<>(List.of(scheduleType));
 
         Mockito.doNothing().when(scheduleTypeRepository).deleteById(existingId);
@@ -56,6 +66,15 @@ public class ScheduleTypeServiceTests {
         Mockito.when(scheduleTypeRepository.save(ArgumentMatchers.any())).thenReturn(scheduleType);
         Mockito.when(scheduleTypeRepository.findById(existingId)).thenReturn(Optional.of(scheduleType));
         Mockito.when(scheduleTypeRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+        Mockito.doThrow(MappingException.class).when(modelMapper).map(scheduleTypeDTO, null);
+        Mockito.doThrow(EntityNotFoundException.class).when(scheduleTypeRepository).getReferenceById(nonExistingId);
+    }
+
+    @Test
+    public void updateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+           scheduleTypeService.update(nonExistingId, scheduleTypeDTO);
+        });
     }
 
     @Test

@@ -72,10 +72,24 @@ public class ScheduleTypeServiceTests {
     }
 
     @Test
+    public void findAllPagedShouldReturnPage() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ScheduleTypeDTO> result = scheduleTypeService.findAllPaged(pageable);
+        Assertions.assertNotNull(result);
+        Mockito.verify(scheduleTypeRepository, Mockito.times(1)).findAll(pageable);
+    }
+
+    @Test
     public void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             scheduleTypeService.findById(nonExistingId);
         });
+    }
+
+    @Test
+    public void findByIdShouldReturnProductDTOWhenIdExists() {
+        ScheduleTypeDTO result = scheduleTypeService.findById(existingId);
+        Assertions.assertNotNull(result);
     }
 
     @Test
@@ -90,15 +104,6 @@ public class ScheduleTypeServiceTests {
            scheduleTypeService.update(nonExistingId, scheduleTypeDTO);
         });
     }
-
-    @Test
-    public void findAllPagedShouldReturnPage() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<ScheduleTypeDTO> result = scheduleTypeService.findAllPaged(pageable);
-        Assertions.assertNotNull(result);
-        Mockito.verify(scheduleTypeRepository, Mockito.times(1)).findAll(pageable);
-    }
-
 
     @Test
     public void deleteShouldDoNothingWhenIdExists(){

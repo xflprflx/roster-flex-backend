@@ -1,6 +1,7 @@
 package com.rosterflex.application.services;
 
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
+import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.ResourceAccessException;
 
 @ExtendWith(SpringExtension.class)
 public class ScheduleTypeServiceTests {
@@ -43,5 +45,12 @@ public class ScheduleTypeServiceTests {
             scheduleTypeService.delete(existingId);
         });
         Mockito.verify(scheduleTypeRepository, Mockito.times(1)).deleteById(existingId);
+    }
+
+    @Test
+    public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            scheduleTypeService.delete(nonExistingId);
+        });
     }
 }

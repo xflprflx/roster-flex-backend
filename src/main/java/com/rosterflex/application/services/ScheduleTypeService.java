@@ -51,7 +51,7 @@ public class ScheduleTypeService {
     public ScheduleTypeDTO update(Long id, ScheduleTypeDTO dto) {
         try {
             ScheduleType scheduleType = scheduleTypeRepository.getReferenceById(id);
-            modelMapper.map(dto, scheduleType);
+            modelMapper.map(dto, scheduleType.getClass());
             scheduleTypeRepository.save(scheduleType);
             return new ScheduleTypeDTO(scheduleType);
         } catch (MappingException | EntityNotFoundException e) {

@@ -64,10 +64,17 @@ public class ScheduleTypeServiceTests {
         Mockito.when(scheduleTypeRepository.existsById(dependentId)).thenReturn(true);
         Mockito.when(scheduleTypeRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
         Mockito.when(scheduleTypeRepository.save(ArgumentMatchers.any())).thenReturn(scheduleType);
+        Mockito.when(scheduleTypeRepository.getReferenceById(existingId)).thenReturn(scheduleType);
         Mockito.when(scheduleTypeRepository.findById(existingId)).thenReturn(Optional.of(scheduleType));
         Mockito.when(scheduleTypeRepository.findById(nonExistingId)).thenReturn(Optional.empty());
         Mockito.doThrow(MappingException.class).when(modelMapper).map(scheduleTypeDTO, null);
         Mockito.doThrow(EntityNotFoundException.class).when(scheduleTypeRepository).getReferenceById(nonExistingId);
+    }
+
+    @Test
+    public void updateShouldReturnProductDTOWhenIdExists() {
+        ScheduleTypeDTO result = scheduleTypeService.update(existingId, scheduleTypeDTO);
+        Assertions.assertNotNull(result);
     }
 
     @Test

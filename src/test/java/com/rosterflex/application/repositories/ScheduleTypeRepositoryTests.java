@@ -40,4 +40,10 @@ public class ScheduleTypeRepositoryTests {
         Assertions.assertNotNull(scheduleType.getId());
         Assertions.assertEquals(countTotalScheduleTypes + 1, scheduleType.getId());
     }
+
+    @Test
+    public void findByIdShouldReturnNonEmptyOptionalWhenIdExists(){
+        Optional<ScheduleType> scheduleType = scheduleTypeRepository.findById(existingId);
+        Assertions.assertTrue(scheduleType.isPresent());
+    }
 }

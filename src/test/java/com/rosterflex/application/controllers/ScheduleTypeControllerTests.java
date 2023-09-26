@@ -60,9 +60,26 @@ public class ScheduleTypeControllerTests {
         when(scheduleTypeService.update(eq(existingId), any())).thenReturn(scheduleTypeDTO);
         when(scheduleTypeService.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
+        when(scheduleTypeService.insert(any())).thenReturn(scheduleTypeDTO);
+
         doNothing().when(scheduleTypeService).delete(existingId);
         doThrow(ResourceNotFoundException.class).when(scheduleTypeService).delete(nonExistingId);
         doThrow(DatabaseException.class).when(scheduleTypeService).delete(dependentId);
+    }
+
+    @Test
+    public void insertShouldReturnScheduleTypeDTOCreated() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(scheduleTypeDTO);
+        ResultActions result =
+                mockMvc.perform(post("/scheduleTypes")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isCreated());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.workedTime").exists());
     }
 
     @Test
@@ -74,7 +91,7 @@ public class ScheduleTypeControllerTests {
     }
 
     @Test
-    public void deleteShouldReturnNotThoundWhenIdDoesNotExist() throws Exception {
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
         ResultActions result =
                 mockMvc.perform(delete("/scheduleTypes/{id}", nonExistingId)
                         .accept(MediaType.APPLICATION_JSON));

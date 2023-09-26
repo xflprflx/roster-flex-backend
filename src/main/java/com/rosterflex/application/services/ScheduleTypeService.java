@@ -3,16 +3,20 @@ package com.rosterflex.application.services;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
+import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleTypeService {
@@ -24,9 +28,9 @@ public class ScheduleTypeService {
     private ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public List<ScheduleTypeDTO> findAll(){
-        List<ScheduleType> list = scheduleTypeRepository.findAll();
-        return list.stream().map(x -> new ScheduleTypeDTO(x)).collect(Collectors.toList());
+    public Page<ScheduleTypeDTO> findAllPaged(Pageable pageable){
+        Page<ScheduleType> page = scheduleTypeRepository.findAll(pageable);
+        return page.map(x -> new ScheduleTypeDTO(x));
     }
 
     @Transactional(readOnly = true)
@@ -47,12 +51,24 @@ public class ScheduleTypeService {
     public ScheduleTypeDTO update(Long id, ScheduleTypeDTO dto) {
         try {
             ScheduleType scheduleType = scheduleTypeRepository.getReferenceById(id);
-            scheduleType = modelMapper.map(dto, ScheduleType.class);
-            scheduleType.setId(id);
-            scheduleType = scheduleTypeRepository.save(scheduleType);
+            modelMapper.map(dto, scheduleType.getClass());
+            scheduleTypeRepository.save(scheduleType);
             return new ScheduleTypeDTO(scheduleType);
-        }catch (EntityNotFoundException e){
+        } catch (MappingException | EntityNotFoundException e) {
             throw new ResourceNotFoundException(String.format("Id %d não encontrado.", id));
+        }
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!scheduleTypeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+        try {
+            scheduleTypeRepository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
         }
     }
 }

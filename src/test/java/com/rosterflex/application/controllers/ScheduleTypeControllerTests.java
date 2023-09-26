@@ -21,8 +21,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,7 +66,23 @@ public class ScheduleTypeControllerTests {
     }
 
     @Test
-    public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception {
+        ResultActions result =
+                mockMvc.perform(delete("/scheduleTypes/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteShouldReturnNotThoundWhenIdDoesNotExist() throws Exception {
+        ResultActions result =
+                mockMvc.perform(delete("/scheduleTypes/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateShouldReturnScheduleTypeWhenIdExists() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(scheduleTypeDTO);
         ResultActions result =
                 mockMvc.perform(put("/scheduleTypes/{id}", existingId)

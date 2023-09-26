@@ -1,5 +1,6 @@
 package com.rosterflex.application.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.services.ScheduleTypeService;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
@@ -17,8 +18,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +33,10 @@ public class ScheduleTypeControllerTests {
 
     @MockBean
     private ScheduleTypeService scheduleTypeService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     private ScheduleTypeDTO scheduleTypeDTO;
     private PageImpl<ScheduleTypeDTO> page;
@@ -46,8 +53,42 @@ public class ScheduleTypeControllerTests {
         dependentId = 5L;
 
         when(scheduleTypeService.findAllPaged(any())).thenReturn(page);
+
         when(scheduleTypeService.findById(existingId)).thenReturn(scheduleTypeDTO);
         when(scheduleTypeService.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+
+        when(scheduleTypeService.update(eq(existingId), any())).thenReturn(scheduleTypeDTO);
+        when(scheduleTypeService.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
+    }
+
+    @Test
+    public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+
+        String jsonBody = objectMapper.writeValueAsString(scheduleTypeDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/scheduleTypes/{id}", existingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.workedTime").exists());
+    }
+
+    @Test
+    public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+
+        String jsonBody = objectMapper.writeValueAsString(scheduleTypeDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/scheduleTypes/{id}", nonExistingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isNotFound());
     }
 
     @Test

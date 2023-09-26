@@ -28,7 +28,7 @@ Tópicos
 
 <a id="descricao-do-projeto"></a>
 ## Descrição do Projeto 
-<p align="center">Neste repositório será desenvolvido o backend da aplicação. Deixaremos o link o repositório do frontend tão logo o mesmo for criado.</p>
+<p align="center">Neste repositório será desenvolvido o backend da aplicação. Deixaremos o link para o repositório do frontend tão logo o mesmo for criado.</p>
 
 <a id="tecnologias-utilizadas"></a>
 ## Tecnologias Utilizadas

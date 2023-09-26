@@ -11,6 +11,7 @@ Tópicos
    * [Descrição do Projeto](#descricao-do-projeto)
    * [Sessão de Créditos](#sessao-de-creditos)
    * [Tecnologias Utilizadas](#tecnologias-utilizadas)
+   * [Modelo Conceitual](#modelo-conceitual)
 <!--te-->
 
 <h1 align="center">Roster Flex</h1>
@@ -29,8 +30,9 @@ Tópicos
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original-wordmark.svg" width=100px/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original-wordmark.svg" width=100px/>
 </div>
-          
 
+## Modelo Conceitual
+![modelo](https://raw.githubusercontent.com/xflprflx/roster-flex-backend/document/readme/assets/modelo.png)
 
 
 

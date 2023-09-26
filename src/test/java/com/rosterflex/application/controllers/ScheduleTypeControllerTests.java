@@ -2,6 +2,7 @@ package com.rosterflex.application.controllers;
 
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.services.ScheduleTypeService;
+import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import com.rosterflex.application.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ScheduleTypeController.class)
@@ -31,12 +33,21 @@ public class ScheduleTypeControllerTests {
 
     private ScheduleTypeDTO scheduleTypeDTO;
     private PageImpl<ScheduleTypeDTO> page;
+    private long existingId;
+    private long nonExistingId;
+    private long dependentId;
 
     @BeforeEach
     void setUp() throws Exception {
         scheduleTypeDTO = Factory.createScheduleTypeDTO();
         page = new PageImpl<>(List.of(scheduleTypeDTO));
+        existingId = 1L;
+        nonExistingId = 1000L;
+        dependentId = 5L;
+
         when(scheduleTypeService.findAllPaged(any())).thenReturn(page);
+        when(scheduleTypeService.findById(existingId)).thenReturn(scheduleTypeDTO);
+        when(scheduleTypeService.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
     }
 
     @Test
@@ -46,4 +57,29 @@ public class ScheduleTypeControllerTests {
                                 .accept(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk());
     }
+
+    @Test
+    public void findByIdShouldReturnScheduleTypeWhenIdExists() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(get("/scheduleTypes/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.workedTime").exists());
+    }
+
+    @Test
+    public void findByIdShouldReturnNotFoundWhenIdExists() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(get("/scheduleTypes/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
+    }
+
+
 }

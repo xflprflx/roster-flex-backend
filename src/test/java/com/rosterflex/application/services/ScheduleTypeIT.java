@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -31,6 +32,17 @@ public class ScheduleTypeIT {
         existingId = 1L;
         nonExistingId = 1000L;
         countTotalScheduleTypes = 3L;
+    }
+
+    @Test
+    public void findAllPagedShouldReturnSortedPageWhenSortByName() {
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
+        Page<ScheduleTypeDTO> result = scheduleTypeService.findAllPaged(pageRequest);
+
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals("12x36", result.getContent().get(0).getName());
+        Assertions.assertEquals("5x2", result.getContent().get(1).getName());
+        Assertions.assertEquals("6x1", result.getContent().get(2).getName());
     }
 
     @Test

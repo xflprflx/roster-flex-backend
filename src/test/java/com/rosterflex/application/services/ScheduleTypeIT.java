@@ -34,6 +34,13 @@ public class ScheduleTypeIT {
     }
 
     @Test
+    public void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExist() {
+        PageRequest pageRequest = PageRequest.of(50, 10);
+        Page<ScheduleTypeDTO> result = scheduleTypeService.findAllPaged(pageRequest);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void findAllPagedShouldReturnPageWhenPage0Size10() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ScheduleTypeDTO> result = scheduleTypeService.findAllPaged(pageRequest);

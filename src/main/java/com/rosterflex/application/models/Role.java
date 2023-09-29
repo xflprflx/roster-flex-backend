@@ -1,5 +1,6 @@
 package com.rosterflex.application.models;
 
+import com.rosterflex.application.dtos.RoleDTO;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -21,6 +22,11 @@ public class Role implements Serializable {
     public Role(Long id, String authority) {
         this.id = id;
         this.authority = authority;
+    }
+
+    public Role(RoleDTO roleDTO) {
+        this.id = roleDTO.getId();
+        this.authority = roleDTO.getAuthority();
     }
 
     public Long getId() {

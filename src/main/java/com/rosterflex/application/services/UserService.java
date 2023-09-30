@@ -3,6 +3,7 @@ package com.rosterflex.application.services;
 import com.rosterflex.application.dtos.RoleDTO;
 import com.rosterflex.application.dtos.UserDTO;
 import com.rosterflex.application.dtos.UserInsertDTO;
+import com.rosterflex.application.dtos.UserUpdateDTO;
 import com.rosterflex.application.models.Role;
 import com.rosterflex.application.models.User;
 import com.rosterflex.application.repositories.RoleRepository;
@@ -56,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(Long id, UserDTO dto) {
+    public UserDTO update(Long id, UserUpdateDTO dto) {
         try {
             User user = userRepository.getReferenceById(id);
             copyDtoToEntity(dto, user);

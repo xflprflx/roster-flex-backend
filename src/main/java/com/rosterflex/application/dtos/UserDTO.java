@@ -1,6 +1,10 @@
 package com.rosterflex.application.dtos;
 
 import com.rosterflex.application.models.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -10,8 +14,13 @@ public class UserDTO implements Serializable {
     private static  final long serialVersionUID =1L;
 
     private Long id;
+
+    @Size(min = 5, max = 15, message = "Nome de usuário deve ter entre 5 e 15 caracteres")
+    @NotBlank(message = "Campo obrigatório")
     private String username;
     private String fullName;
+
+    @Email(message = "E-mail inválido")
     private String email;
     private String imgUrl;
 

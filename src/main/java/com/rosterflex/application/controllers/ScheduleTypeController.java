@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,12 +26,14 @@ public class ScheduleTypeController {
         return ResponseEntity.ok().body(page);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<ScheduleTypeDTO> findById(@PathVariable Long id){
         ScheduleTypeDTO dto = scheduleTypeService.findById(id);
         return ResponseEntity.ok().body(dto);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<ScheduleTypeDTO> insert(@RequestBody ScheduleTypeDTO dto){
         dto = scheduleTypeService.insert(dto);

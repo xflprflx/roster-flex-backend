@@ -6,6 +6,7 @@ import com.rosterflex.application.dtos.UserInsertDTO;
 import com.rosterflex.application.dtos.UserUpdateDTO;
 import com.rosterflex.application.models.Role;
 import com.rosterflex.application.models.User;
+import com.rosterflex.application.projections.UserDetailsProjection;
 import com.rosterflex.application.repositories.RoleRepository;
 import com.rosterflex.application.repositories.UserRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
@@ -15,18 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -94,4 +99,18 @@ public class UserService {
         }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<UserDetailsProjection> result = userRepository.searchUserAndRolesByUsername(username);
+        if (result.size() == 0){
+            throw new UsernameNotFoundException("User not found");
+        }
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(result.get(0).getPassword());
+        for(UserDetailsProjection projection : result) {
+            user.addRole(new Role(projection.getRoleId(), projection.getAuthority()));
+        }
+        return user;
+    }
 }

@@ -2,13 +2,14 @@ package com.rosterflex.application.models;
 
 import com.rosterflex.application.dtos.RoleDTO;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "tb_role")
-public class Role implements Serializable {
+public class Role implements Serializable, GrantedAuthority {
     private static  final long serialVersionUID =1L;
 
     @Id
@@ -37,6 +38,7 @@ public class Role implements Serializable {
         this.id = id;
     }
 
+    @Override
     public String getAuthority() {
         return authority;
     }

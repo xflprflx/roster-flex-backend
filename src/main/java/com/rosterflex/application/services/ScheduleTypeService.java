@@ -1,7 +1,11 @@
 package com.rosterflex.application.services;
 
+import com.rosterflex.application.dtos.RoleDTO;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
+import com.rosterflex.application.dtos.UserDTO;
+import com.rosterflex.application.models.Role;
 import com.rosterflex.application.models.ScheduleType;
+import com.rosterflex.application.models.User;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -23,9 +28,6 @@ public class ScheduleTypeService {
 
     @Autowired
     private ScheduleTypeRepository scheduleTypeRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
     public Page<ScheduleTypeDTO> findAllPaged(Pageable pageable){
@@ -42,7 +44,8 @@ public class ScheduleTypeService {
 
     @Transactional
     public ScheduleTypeDTO insert(ScheduleTypeDTO dto) {
-        ScheduleType scheduleType = modelMapper.map(dto, ScheduleType.class);
+        ScheduleType scheduleType = new ScheduleType();
+        copyDtoToEntity(dto, scheduleType);
         scheduleType = scheduleTypeRepository.save(scheduleType);
         return new ScheduleTypeDTO(scheduleType);
     }
@@ -51,7 +54,7 @@ public class ScheduleTypeService {
     public ScheduleTypeDTO update(Long id, ScheduleTypeDTO dto) {
         try {
             ScheduleType scheduleType = scheduleTypeRepository.getReferenceById(id);
-            modelMapper.map(dto, scheduleType.getClass());
+            copyDtoToEntity(dto, scheduleType);
             scheduleTypeRepository.save(scheduleType);
             return new ScheduleTypeDTO(scheduleType);
         } catch (MappingException | EntityNotFoundException e) {
@@ -70,5 +73,14 @@ public class ScheduleTypeService {
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
         }
+    }
+
+    private void copyDtoToEntity(ScheduleTypeDTO dto, ScheduleType entity) {
+        entity.setName(dto.getName());
+        entity.setWorkedTime(dto.getWorkedTime());
+        entity.setFreeTime(dto.getFreeTime());
+        entity.setUnity(dto.getUnity());
+        entity.setMonthlyHours(dto.getMonthlyHours());
+        entity.setDaysOff(dto.getDaysOff());
     }
 }

@@ -11,3 +11,7 @@ INSERT INTO tb_user(username, full_name, email, password, img_url) VALUES ('mari
 INSERT INTO tb_user_role (user_id, role_id) VALUES (1, 1);
 INSERT INTO tb_user_role (user_id, role_id) VALUES (1, 2);
 INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 1);
+
+INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('08:00', '18:00', '01:00');
+INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('12:00', '00:00', '01:00');
+INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('08:00', '20:00', '01:30');

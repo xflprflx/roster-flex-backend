@@ -38,7 +38,7 @@ public class ScheduleTypeService {
     @Transactional(readOnly = true)
     public ScheduleTypeDTO findById(Long id) {
         Optional<ScheduleType> obj = scheduleTypeRepository.findById(id);
-        ScheduleType scheduleType = obj.orElseThrow(() -> new ResourceNotFoundException("Tipo de escala não localizada."));
+        ScheduleType scheduleType = obj.orElseThrow(() -> new ResourceNotFoundException("Recurso não localizado."));
         return new ScheduleTypeDTO(scheduleType);
     }
 

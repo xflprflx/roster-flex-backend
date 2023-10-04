@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
         Optional<User> obj = userRepository.findById(id);
-        User user = obj.orElseThrow(() -> new ResourceNotFoundException("Tipo de escala não localizada."));
+        User user = obj.orElseThrow(() -> new ResourceNotFoundException("Recurso não localizado."));
         return new UserDTO(user);
     }
 

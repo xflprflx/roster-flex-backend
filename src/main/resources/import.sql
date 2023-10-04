@@ -15,3 +15,12 @@ INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 1);
 INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('08:00', '18:00', '01:00');
 INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('12:00', '00:00', '01:00');
 INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('08:00', '20:00', '01:30');
+
+INSERT INTO tb_team (name) VALUES  ('UTI 3');
+INSERT INTO tb_team (name) VALUES  ('UTI 1');
+
+INSERT INTO tb_team_role (team_id, role_id, quantity) VALUES (1, 1, 10);
+INSERT INTO tb_team_role (team_id, role_id, quantity) VALUES (1, 2, 1);
+INSERT INTO tb_team_role (team_id, role_id, quantity) VALUES (2, 1, 8);
+INSERT INTO tb_team_role (team_id, role_id, quantity) VALUES (2, 2, 2);
+

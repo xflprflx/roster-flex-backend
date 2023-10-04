@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_role")
@@ -16,6 +19,9 @@ public class Role implements Serializable, GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String authority;
+
+    @OneToMany(mappedBy = "id.role")
+    private Set<TeamRole> teamRoles = new HashSet<>();
 
     public Role() {
     }
@@ -45,6 +51,14 @@ public class Role implements Serializable, GrantedAuthority {
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+
+    public Set<TeamRole> getTeamRoles() {
+        return teamRoles;
+    }
+
+    public List<Team> getTeams(){
+        return teamRoles.stream().map(x -> x.getTeam()).toList();
     }
 
     @Override

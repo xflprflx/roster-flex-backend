@@ -32,6 +32,10 @@ public class User implements Serializable, UserDetails {
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
     public User() {
     }
 
@@ -95,6 +99,14 @@ public class User implements Serializable, UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     @Override

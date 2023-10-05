@@ -2,6 +2,7 @@ package com.rosterflex.application.dtos;
 
 import com.rosterflex.application.models.Team;
 import com.rosterflex.application.models.TeamRole;
+import com.rosterflex.application.models.User;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -13,7 +14,8 @@ public class TeamDTO implements Serializable {
     private Long id;
     private String name;
 
-    private Set<TeamRoleDTO> teamRoleDTOS = new HashSet<>();
+    private Set<TeamRoleDTO> teamRolesDTO = new HashSet<>();
+    private Set<UserDTO> employeesDTO = new HashSet<>();
 
     public TeamDTO() {
     }
@@ -31,7 +33,14 @@ public class TeamDTO implements Serializable {
     public TeamDTO(Team team, Set<TeamRole> teamRoles) {
         this.id = team.getId();
         this.name = team.getName();
-        teamRoles.forEach(teamRole -> this.teamRoleDTOS.add(new TeamRoleDTO(teamRole)));
+        teamRoles.forEach(teamRole -> this.teamRolesDTO.add(new TeamRoleDTO(teamRole)));
+    }
+
+    public TeamDTO(Team team, Set<TeamRole> teamRoles, Set<User> employees) {
+        this.id = team.getId();
+        this.name = team.getName();
+        teamRoles.forEach(teamRole -> this.teamRolesDTO.add(new TeamRoleDTO(teamRole)));
+        employees.forEach(employee -> this.employeesDTO.add(new UserDTO(employee)));
     }
 
     public Long getId() {
@@ -51,6 +60,10 @@ public class TeamDTO implements Serializable {
     }
 
     public Set<TeamRoleDTO> getTeamRoles() {
-        return teamRoleDTOS;
+        return teamRolesDTO;
+    }
+
+    public Set<UserDTO> getEmployees() {
+        return employeesDTO;
     }
 }

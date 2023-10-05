@@ -22,6 +22,9 @@ public class Team implements Serializable {
     @OneToMany(mappedBy = "id.team")
     private Set<TeamRole> teamRoles = new HashSet<>();
 
+    @OneToMany(mappedBy = "team")
+    private Set<User> employees = new HashSet<>();
+
     public Team() {
     }
 
@@ -52,6 +55,10 @@ public class Team implements Serializable {
 
     public List<Role> getRoles(){
         return teamRoles.stream().map(x -> x.getRole()).toList();
+    }
+
+    public Set<User> getEmployees() {
+        return employees;
     }
 
     @Override

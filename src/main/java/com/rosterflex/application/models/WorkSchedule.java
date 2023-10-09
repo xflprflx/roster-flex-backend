@@ -1,10 +1,14 @@
 package com.rosterflex.application.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rosterflex.application.enums.ScheduleStatus;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_work_schedule")
@@ -14,18 +18,27 @@ public class WorkSchedule implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate initialDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate finalDate;
     private String description;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus scheduleStatus;
+
+    @ManyToMany(mappedBy = "workSchedules")
+    private Set<ScheduleDate> scheduleDates = new HashSet<>();
 
     public WorkSchedule() {
     }
 
-    public WorkSchedule(Long id, LocalDate initialDate, LocalDate finalDate, String description) {
+    public WorkSchedule(Long id, LocalDate initialDate, LocalDate finalDate, String description, ScheduleStatus scheduleStatus) {
         this.id = id;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
         this.description = description;
+        this.scheduleStatus = scheduleStatus;
     }
 
     public Long getId() {
@@ -58,6 +71,18 @@ public class WorkSchedule implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ScheduleStatus getScheduleStatus() {
+        return scheduleStatus;
+    }
+
+    public void setScheduleStatus(ScheduleStatus scheduleStatus) {
+        this.scheduleStatus = scheduleStatus;
+    }
+
+    public Set<ScheduleDate> getScheduleDates() {
+        return scheduleDates;
     }
 
     @Override

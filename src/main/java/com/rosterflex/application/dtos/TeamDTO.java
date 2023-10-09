@@ -1,5 +1,6 @@
 package com.rosterflex.application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rosterflex.application.models.Team;
 import com.rosterflex.application.models.TeamRole;
 import com.rosterflex.application.models.User;
@@ -13,34 +14,25 @@ public class TeamDTO implements Serializable {
 
     private Long id;
     private String name;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private UserDTO manager;
 
     private Set<TeamRoleDTO> teamRolesDTO = new HashSet<>();
+
     private Set<UserDTO> employeesDTO = new HashSet<>();
 
     public TeamDTO() {
     }
 
-    public TeamDTO(Long id, String name) {
+    public TeamDTO(Long id, String name, User manager) {
         this.id = id;
         this.name = name;
+        this.manager = new UserDTO(manager);
     }
 
     public TeamDTO(Team team) {
         this.id = team.getId();
         this.name = team.getName();
-    }
-
-    public TeamDTO(Team team, Set<TeamRole> teamRoles) {
-        this.id = team.getId();
-        this.name = team.getName();
-        teamRoles.forEach(teamRole -> this.teamRolesDTO.add(new TeamRoleDTO(teamRole)));
-    }
-
-    public TeamDTO(Team team, Set<TeamRole> teamRoles, Set<User> employees) {
-        this.id = team.getId();
-        this.name = team.getName();
-        teamRoles.forEach(teamRole -> this.teamRolesDTO.add(new TeamRoleDTO(teamRole)));
-        employees.forEach(employee -> this.employeesDTO.add(new UserDTO(employee)));
     }
 
     public Long getId() {
@@ -65,5 +57,13 @@ public class TeamDTO implements Serializable {
 
     public Set<UserDTO> getEmployees() {
         return employeesDTO;
+    }
+
+    public UserDTO getManager() {
+        return manager;
+    }
+
+    public void setManager(UserDTO manager) {
+        this.manager = manager;
     }
 }

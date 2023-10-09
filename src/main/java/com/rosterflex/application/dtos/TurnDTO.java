@@ -1,10 +1,14 @@
 package com.rosterflex.application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rosterflex.application.models.Turn;
+import com.rosterflex.application.models.User;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TurnDTO implements Serializable {
     private static  final long serialVersionUID =1L;
 
@@ -61,4 +65,5 @@ public class TurnDTO implements Serializable {
     public void setIntervalDuration(LocalTime intervalDuration) {
         this.intervalDuration = intervalDuration;
     }
+
 }

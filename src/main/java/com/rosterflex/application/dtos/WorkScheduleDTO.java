@@ -1,5 +1,6 @@
 package com.rosterflex.application.dtos;
 
+import com.rosterflex.application.enums.ScheduleStatus;
 import com.rosterflex.application.models.WorkSchedule;
 
 import java.io.Serializable;
@@ -12,15 +13,17 @@ public class WorkScheduleDTO implements Serializable {
     private LocalDate initialDate;
     private LocalDate finalDate;
     private String description;
+    private ScheduleStatus scheduleStatus;
 
     public WorkScheduleDTO() {
     }
 
-    public WorkScheduleDTO(Long id, LocalDate initialDate, LocalDate finalDate, String description) {
+    public WorkScheduleDTO(Long id, LocalDate initialDate, LocalDate finalDate, String description, ScheduleStatus scheduleStatus) {
         this.id = id;
         this.initialDate = initialDate;
         this.finalDate = finalDate;
         this.description = description;
+        this.scheduleStatus = scheduleStatus;
     }
 
     public WorkScheduleDTO(WorkSchedule workSchedule) {
@@ -28,6 +31,7 @@ public class WorkScheduleDTO implements Serializable {
         this.initialDate = workSchedule.getInitialDate();
         this.finalDate = workSchedule.getFinalDate();
         this.description = workSchedule.getDescription();
+        this.scheduleStatus = workSchedule.getScheduleStatus();
     }
 
     public Long getId() {
@@ -60,5 +64,13 @@ public class WorkScheduleDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ScheduleStatus getScheduleStatus() {
+        return scheduleStatus;
+    }
+
+    public void setScheduleStatus(ScheduleStatus scheduleStatus) {
+        this.scheduleStatus = scheduleStatus;
     }
 }

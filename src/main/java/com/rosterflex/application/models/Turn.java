@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_turn")
@@ -17,6 +19,12 @@ public class Turn implements Serializable {
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalTime intervalDuration;
+
+    @OneToMany(mappedBy = "turn")
+    private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "turn")
+    private Set<UserScheduleDate> userScheduleDates = new HashSet<>();
 
     public Turn() {
     }
@@ -58,6 +66,14 @@ public class Turn implements Serializable {
 
     public void setIntervalDuration(LocalTime intervalDuration) {
         this.intervalDuration = intervalDuration;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public Set<UserScheduleDate> getUserScheduleDates() {
+        return userScheduleDates;
     }
 
     @Override

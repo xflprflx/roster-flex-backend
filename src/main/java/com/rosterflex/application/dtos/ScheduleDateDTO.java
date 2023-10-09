@@ -1,9 +1,12 @@
 package com.rosterflex.application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rosterflex.application.models.ScheduleDate;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ScheduleDateDTO implements Serializable {
     private static  final long serialVersionUID =1L;
@@ -11,6 +14,8 @@ public class ScheduleDateDTO implements Serializable {
     private Long id;
     private LocalDate date;
     private boolean holiday;
+
+    private Set<UserScheduleDateDTO> userScheduleDates = new HashSet<>();
 
     public ScheduleDateDTO() {
     }
@@ -49,5 +54,9 @@ public class ScheduleDateDTO implements Serializable {
 
     public void setHoliday(boolean holiday) {
         this.holiday = holiday;
+    }
+
+    public Set<UserScheduleDateDTO> getUserScheduleDates() {
+        return userScheduleDates;
     }
 }

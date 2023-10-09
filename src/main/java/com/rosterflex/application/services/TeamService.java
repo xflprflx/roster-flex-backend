@@ -44,14 +44,14 @@ public class TeamService {
     @Transactional(readOnly = true)
     public Page<TeamDTO> findAllPaged(Pageable pageable){
         Page<Team> page = teamRepository.findAll(pageable);
-        return page.map(x -> new TeamDTO(x, x.getTeamRoles()));
+        return page.map(x -> new TeamDTO(x));
     }
 
     @Transactional(readOnly = true)
     public TeamDTO findById(Long id) {
         Optional<Team> obj = teamRepository.findById(id);
         Team team = obj.orElseThrow(() -> new ResourceNotFoundException("Recurso não localizado."));
-        return new TeamDTO(team, team.getTeamRoles(), team.getEmployees());
+        return new TeamDTO(team);
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class TeamService {
         teamRoleRepository.saveAll(team.getTeamRoles());
         userRepository.saveAll(team.getEmployees());
 
-        return new TeamDTO(team, team.getTeamRoles(), team.getEmployees());
+        return new TeamDTO(team);
     }
 
     @Transactional
@@ -75,7 +75,7 @@ public class TeamService {
             teamRoleRepository.saveAll(team.getTeamRoles());
             userRepository.saveAll(team.getEmployees());
             teamRepository.save(team);
-            return new TeamDTO(team, team.getTeamRoles(), team.getEmployees());
+            return new TeamDTO(team);
         } catch (MappingException | EntityNotFoundException e) {
             throw new ResourceNotFoundException(String.format("Id %d não encontrado.", id));
         }
@@ -96,6 +96,8 @@ public class TeamService {
 
     private void copyDtoToEntity(TeamDTO dto, Team entity) {
         entity.setName(dto.getName());
+        User manager = userRepository.getReferenceById(dto.getManager().getId());
+        entity.setManager(manager);
         entity.getEmployees().clear();
         entity.getTeamRoles().clear();
 

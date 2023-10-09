@@ -1,6 +1,7 @@
 package com.rosterflex.application.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rosterflex.application.enums.ShiftStatus;
 import com.rosterflex.application.models.ChangeTurn;
 
@@ -17,9 +18,13 @@ public class ChangeTurnDTO implements Serializable {
     private LocalDate requestDate;
     private ShiftStatus peerApproval;
     private ShiftStatus managerApproval;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserDTO userOriginalSchedule;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private ScheduleDateDTO scheduleDateOriginalSchedule;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserDTO userProposedSchedule;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private ScheduleDateDTO scheduleDateProposedSchedule;
 
     public ChangeTurnDTO() {
@@ -111,5 +116,13 @@ public class ChangeTurnDTO implements Serializable {
 
     public void setScheduleDateProposedSchedule(ScheduleDateDTO scheduleDateProposedSchedule) {
         this.scheduleDateProposedSchedule = scheduleDateProposedSchedule;
+    }
+
+    public LocalDate getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
     }
 }

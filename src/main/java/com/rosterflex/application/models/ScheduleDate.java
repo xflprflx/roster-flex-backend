@@ -1,10 +1,13 @@
 package com.rosterflex.application.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_schedule_date")
@@ -14,8 +17,18 @@ public class ScheduleDate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
     private boolean holiday;
+
+    @OneToMany(mappedBy = "id.scheduleDate")
+    private Set<UserScheduleDate> userScheduleDates = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "tb_schedule_date_work_schedule",
+            joinColumns = @JoinColumn(name = "schedule_date_id"),
+            inverseJoinColumns = @JoinColumn(name = "work_schedule_id"))
+    private Set<WorkSchedule> workSchedules = new HashSet<>();
 
     public ScheduleDate() {
     }
@@ -48,6 +61,14 @@ public class ScheduleDate implements Serializable {
 
     public void setHoliday(boolean holiday) {
         this.holiday = holiday;
+    }
+
+    public Set<WorkSchedule> getWorkSchedules() {
+        return workSchedules;
+    }
+
+    public Set<UserScheduleDate> getUserScheduleDates() {
+        return userScheduleDates;
     }
 
     @Override

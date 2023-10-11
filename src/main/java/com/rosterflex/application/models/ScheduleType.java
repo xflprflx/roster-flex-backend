@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_schedule_type")
@@ -20,6 +22,9 @@ public class ScheduleType implements Serializable {
     private ChronoUnit unity;
     private Integer monthlyHours;
     private Integer daysOff;
+
+    @OneToMany(mappedBy = "scheduleType")
+    private Set<User> users = new HashSet<>();
 
     public ScheduleType() {
     }
@@ -88,6 +93,10 @@ public class ScheduleType implements Serializable {
 
     public void setDaysOff(Integer daysOff) {
         this.daysOff = daysOff;
+    }
+
+    public Set<User> getUsers() {
+        return users;
     }
 
     @Override

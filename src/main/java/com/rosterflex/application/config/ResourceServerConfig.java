@@ -37,6 +37,7 @@ public class ResourceServerConfig {
 
         http.securityMatcher(PathRequest.toH2Console()).csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
         return http.build();
     }
 

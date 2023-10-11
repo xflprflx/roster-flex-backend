@@ -2,10 +2,12 @@ package com.rosterflex.application.services;
 
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.dtos.TurnDTO;
+import com.rosterflex.application.dtos.UserDTO;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.repositories.TurnRepository;
+import com.rosterflex.application.repositories.UserRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;

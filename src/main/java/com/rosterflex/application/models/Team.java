@@ -19,15 +19,23 @@ public class Team implements Serializable {
     @Column(unique = true)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User manager;
+
     @OneToMany(mappedBy = "id.team")
     private Set<TeamRole> teamRoles = new HashSet<>();
+
+    @OneToMany(mappedBy = "team")
+    private Set<User> employees = new HashSet<>();
 
     public Team() {
     }
 
-    public Team(Long id, String name) {
+    public Team(Long id, String name, User manager) {
         this.id = id;
         this.name = name;
+        this.manager = manager;
     }
 
     public Long getId() {
@@ -52,6 +60,18 @@ public class Team implements Serializable {
 
     public List<Role> getRoles(){
         return teamRoles.stream().map(x -> x.getRole()).toList();
+    }
+
+    public Set<User> getEmployees() {
+        return employees;
+    }
+
+    public User getManager() {
+        return manager;
+    }
+
+    public void setManager(User manager) {
+        this.manager = manager;
     }
 
     @Override

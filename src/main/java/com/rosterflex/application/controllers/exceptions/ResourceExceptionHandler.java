@@ -1,5 +1,6 @@
 package com.rosterflex.application.controllers.exceptions;
 
+import com.rosterflex.application.services.exceptions.ArgumentNotValidException;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,7 +42,7 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationError> database(MethodArgumentNotValidException e, HttpServletRequest request){
+    public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
         ValidationError err = new ValidationError();
         err.setTimestamp(Instant.now());
@@ -53,7 +54,19 @@ public class ResourceExceptionHandler {
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             err.addError(fieldError.getField(), fieldError.getDefaultMessage());
         }
-        
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ArgumentNotValidException.class)
+    public ResponseEntity<StandardError> database(ArgumentNotValidException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Argument not valid exception");
+        err.setMsg(e.getMessage());
+        err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 }

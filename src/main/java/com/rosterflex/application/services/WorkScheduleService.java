@@ -73,5 +73,6 @@ public class WorkScheduleService {
         entity.setInitialDate(dto.getInitialDate());
         entity.setFinalDate(dto.getFinalDate());
         entity.setDescription(dto.getDescription());
+        entity.setScheduleStatus(dto.getScheduleStatus());
     }
 }

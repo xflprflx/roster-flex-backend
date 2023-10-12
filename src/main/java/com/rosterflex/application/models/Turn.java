@@ -1,6 +1,10 @@
 package com.rosterflex.application.models;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -8,6 +12,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Audited
 @Entity
 @Table(name = "tb_turn")
 public class Turn implements Serializable {
@@ -21,9 +26,11 @@ public class Turn implements Serializable {
     private LocalTime intervalDuration;
 
     @OneToMany(mappedBy = "turn")
+    @NotAudited
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "turn")
+    @NotAudited
     private Set<UserScheduleDate> userScheduleDates = new HashSet<>();
 
     public Turn() {

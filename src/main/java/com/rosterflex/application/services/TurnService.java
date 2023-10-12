@@ -3,8 +3,10 @@ package com.rosterflex.application.services;
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.dtos.TurnDTO;
 import com.rosterflex.application.dtos.UserDTO;
+import com.rosterflex.application.models.EntityWithRevision;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.models.Turn;
+import com.rosterflex.application.repositories.GenericRevisionRepository;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.repositories.TurnRepository;
 import com.rosterflex.application.repositories.UserRepository;
@@ -16,10 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +33,9 @@ public class TurnService {
 
     @Autowired
     private TurnRepository turnRepository;
+
+    @Autowired
+    private GenericRevisionRepository genericRevisionRepository;
 
     @Transactional(readOnly = true)
     public Page<TurnDTO> findAllPaged(Pageable pageable){
@@ -71,6 +80,15 @@ public class TurnService {
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
+        }
+    }
+
+    public List<EntityWithRevision<Turn>> getRevisions(Long id) {
+        List<EntityWithRevision<Turn>> revisions = genericRevisionRepository.revisionList(id, Turn.class);
+        if (revisions != null) {
+            return revisions;
+        } else {
+            return null;
         }
     }
 

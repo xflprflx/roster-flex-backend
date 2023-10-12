@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public UserDTO findMe() {
-        User user = this.authenticated();
+        User user = authenticated();
         return new UserDTO(user);
     }
 
@@ -126,7 +127,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    protected User authenticated() {
+    public User authenticated() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
@@ -137,5 +138,4 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Invalid user");
         }
     }
-
 }

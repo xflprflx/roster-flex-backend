@@ -1,13 +1,13 @@
 package com.rosterflex.application.controllers;
 
 
-import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.dtos.TurnDTO;
-import com.rosterflex.application.services.ScheduleTypeService;
+import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.services.TurnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revisions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -55,4 +55,10 @@ public class TurnController {
         turnService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/revisions/{id}")
+    public Revisions<Long, Turn> revisions(@PathVariable Long id) {
+        return turnService.revisions(id);
+    }
+
 }

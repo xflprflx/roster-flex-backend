@@ -1,13 +1,8 @@
 package com.rosterflex.application.services;
 
-import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.dtos.TurnDTO;
-import com.rosterflex.application.dtos.UserDTO;
-import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.models.Turn;
-import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.repositories.TurnRepository;
-import com.rosterflex.application.repositories.UserRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revisions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +68,13 @@ public class TurnService {
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
         }
+    }
+
+    public Revisions<Long, Turn> revisions(Long id) {
+        return turnRepository.findRevisions(id);
+                /*.stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());*/
     }
 
     private void copyDtoToEntity(TurnDTO dto, Turn entity) {

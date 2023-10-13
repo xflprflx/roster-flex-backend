@@ -1,10 +1,14 @@
 package com.rosterflex.application.listeners;
 
 import com.rosterflex.application.models.Revision;
+import org.hibernate.envers.EntityTrackingRevisionListener;
 import org.hibernate.envers.RevisionListener;
+import org.hibernate.envers.RevisionType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+
+import java.io.Serializable;
 
 public class EntityRevisionListener implements RevisionListener {
 

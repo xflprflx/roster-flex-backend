@@ -2,9 +2,7 @@ package com.rosterflex.application.models;
 
 import com.rosterflex.application.listeners.EntityRevisionListener;
 import jakarta.persistence.*;
-import org.hibernate.envers.RevisionEntity;
-import org.hibernate.envers.RevisionNumber;
-import org.hibernate.envers.RevisionTimestamp;
+import org.hibernate.envers.*;
 
 import java.util.Date;
 
@@ -23,6 +21,9 @@ public class Revision {
 
     @Column
     private String username;
+
+    @Column
+    private RevisionType revisionType;
 
     public Revision() {
     }
@@ -55,5 +56,13 @@ public class Revision {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public RevisionType getRevisionType() {
+        return revisionType;
+    }
+
+    public void setRevisionType(RevisionType revisionType) {
+        this.revisionType = revisionType;
     }
 }

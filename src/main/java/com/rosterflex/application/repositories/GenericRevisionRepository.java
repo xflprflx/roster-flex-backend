@@ -7,6 +7,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.RevisionEntity;
+import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.configuration.internal.metadata.RevisionInfoHelper;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +29,10 @@ public class GenericRevisionRepository<T> {
 
     public List<EntityWithRevision<T>> revisionList(Long id, Class<T> type) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
         List<Number> idsRevision = auditReader.getRevisions(type, id);
         List<EntityWithRevision<T>> allRevisions = new ArrayList<>();
         Map<Number, Revision> revisions = auditReader.findRevisions(Revision.class, new HashSet<Number>(idsRevision));
-
         for (Number revisionId : idsRevision){
             T revisionList = auditReader.find(type, id, revisionId);
             Revision revision = revisions.get(revisionId);
@@ -36,4 +41,17 @@ public class GenericRevisionRepository<T> {
         }
         return allRevisions;
     }
+
+    public RevisionType getRevisionType(Class<T> type, Long id, Number revisionId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        // Verifique se a entidade existe na revisão atual
+        T revisionList = auditReader.find(type, id, revisionId);
+        if (revisionList != null) {
+            return RevisionType.MOD; // Entidade existe, é uma atualização
+        } else {
+            return RevisionType.DEL; // Entidade não existe, é uma exclusão
+        }
+    }
+
+
 }

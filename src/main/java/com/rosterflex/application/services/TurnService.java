@@ -4,6 +4,7 @@ import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.dtos.TurnDTO;
 import com.rosterflex.application.dtos.UserDTO;
 import com.rosterflex.application.models.EntityWithRevision;
+import com.rosterflex.application.models.Revision;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.repositories.GenericRevisionRepository;
@@ -13,6 +14,7 @@ import com.rosterflex.application.repositories.UserRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.envers.RevisionType;
 import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -86,6 +88,13 @@ public class TurnService {
     public List<EntityWithRevision<Turn>> getRevisions(Long id) {
         List<EntityWithRevision<Turn>> revisions = genericRevisionRepository.revisionList(id, Turn.class);
         if (revisions != null) {
+            for (EntityWithRevision revision : revisions) {
+                if (revision==revisions.get(0)){
+                    revision.getRevision().setRevisionType(RevisionType.ADD);
+                } else {
+                    revision.getRevision().setRevisionType(genericRevisionRepository.getRevisionType(Turn.class, id, revision.getRevision().getRevisionId()));
+                }
+            }
             return revisions;
         } else {
             return null;

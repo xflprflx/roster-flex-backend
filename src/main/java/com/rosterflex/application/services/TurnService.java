@@ -1,8 +1,6 @@
 package com.rosterflex.application.services;
 
-import com.rosterflex.application.dtos.ScheduleTypeDTO;
-import com.rosterflex.application.dtos.TurnDTO;
-import com.rosterflex.application.dtos.UserDTO;
+import com.rosterflex.application.dtos.*;
 import com.rosterflex.application.models.EntityWithRevision;
 import com.rosterflex.application.models.Revision;
 import com.rosterflex.application.models.ScheduleType;
@@ -27,6 +25,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +40,7 @@ public class TurnService {
     private GenericRevisionRepository genericRevisionRepository;
 
     @Transactional(readOnly = true)
-    public Page<TurnDTO> findAllPaged(Pageable pageable){
+    public Page<TurnDTO> findAllPaged(Pageable pageable) {
         Page<Turn> page = turnRepository.findAll(pageable);
         return page.map(x -> new TurnDTO(x));
     }
@@ -79,8 +79,7 @@ public class TurnService {
         }
         try {
             turnRepository.deleteById(id);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
         }
     }
@@ -89,7 +88,7 @@ public class TurnService {
         List<EntityWithRevision<Turn>> revisions = genericRevisionRepository.revisionList(id, Turn.class);
         if (revisions != null) {
             for (EntityWithRevision revision : revisions) {
-                if (revision==revisions.get(0)){
+                if (revision == revisions.get(0)) {
                     revision.getRevision().setRevisionType(RevisionType.ADD);
                 } else {
                     revision.getRevision().setRevisionType(genericRevisionRepository.getRevisionType(Turn.class, id, revision.getRevision().getRevisionId()));
@@ -99,6 +98,62 @@ public class TurnService {
         } else {
             return null;
         }
+    }
+
+    public List<RevisionDataDTO> getRevisionsWithAttributeComparison(Long id) {
+        List<EntityWithRevision<Turn>> revisions = getRevisions(id);
+        List<RevisionDataDTO> revisionDataDTOS = new ArrayList<>();
+
+        for (int i = 0; i < revisions.size(); i++) {
+            EntityWithRevision<Turn> actualRevision = revisions.get(i);
+            EntityWithRevision<Turn> previousRevision;
+            if (i != 0){
+                previousRevision = revisions.get(i - 1);
+            } else {
+                previousRevision = null;
+            }
+
+            RevisionDataDTO revisionDataDTO = new RevisionDataDTO();
+            revisionDataDTO.setId(actualRevision.getRevision().getRevisionId());
+            revisionDataDTO.setRevisionMoment(actualRevision.getRevision().getRevisionDate());
+            revisionDataDTO.setRevisionAuthor(actualRevision.getRevision().getUsername());
+            revisionDataDTO.setRevisionType(actualRevision.getRevision().getRevisionType().toString());
+
+            Field[] attributes = actualRevision.getEntity().getClass().getDeclaredFields();
+            for (Field attribute : attributes){
+                attribute.setAccessible(true);
+                Object oldValue = null;
+                Object newValue = null;
+
+                String attributeName = attribute.getName();
+
+                // Verifique se o atributo deve ser ignorado
+                if (attributeName.equals("serialVersionUID")) {
+                    continue; // Ignora este atributo e passa para o próximo
+                }
+
+                try {
+                    if(previousRevision != null){
+                        oldValue = attribute.get(previousRevision.getEntity());
+                    } else {
+                        oldValue = "";
+                    }
+                    newValue = attribute.get(actualRevision.getEntity());
+
+                    if(oldValue != null && !oldValue.equals(newValue)){
+                        var revisionEditedFieldDTO = new RevisionEditedFieldDTO();
+                        revisionEditedFieldDTO.setField(attribute.getName());
+                        revisionEditedFieldDTO.setOldValue(oldValue.toString());
+                        revisionEditedFieldDTO.setNewValue(newValue.toString());
+                        revisionDataDTO.getEditedFieldDTOS().add(revisionEditedFieldDTO);
+                    }
+                }catch (IllegalAccessException e){
+                    e.printStackTrace();
+                }
+            }
+            revisionDataDTOS.add(revisionDataDTO);
+        }
+        return revisionDataDTOS;
     }
 
     private void copyDtoToEntity(TurnDTO dto, Turn entity) {

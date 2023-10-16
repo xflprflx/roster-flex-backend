@@ -2,16 +2,11 @@ package com.rosterflex.application.repositories;
 
 import com.rosterflex.application.models.EntityWithRevision;
 import com.rosterflex.application.models.Revision;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.configuration.internal.metadata.RevisionInfoHelper;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

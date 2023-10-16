@@ -1,13 +1,12 @@
 package com.rosterflex.application.controllers;
 
 
-import com.rosterflex.application.dtos.ScheduleTypeDTO;
+import com.rosterflex.application.dtos.RevisionDataDTO;
 import com.rosterflex.application.dtos.TurnDTO;
 import com.rosterflex.application.models.EntityWithRevision;
 import com.rosterflex.application.models.Turn;
-import com.rosterflex.application.repositories.GenericRevisionRepository;
-import com.rosterflex.application.services.ScheduleTypeService;
 import com.rosterflex.application.services.TurnService;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +63,16 @@ public class TurnController {
     @GetMapping("/revisions/{id}")
     public ResponseEntity<List<EntityWithRevision<Turn>>> getRevisions(@PathVariable Long id) {
         List<EntityWithRevision<Turn>> revisions = turnService.getRevisions(id);
+        if (revisions != null) {
+            return new ResponseEntity(revisions, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/revisionsDTO/{id}")
+    public ResponseEntity<List<RevisionDataDTO>> getRevisionsWithAttributeComparison(@PathVariable Long id) {
+        List<RevisionDataDTO> revisions = turnService.getRevisionsWithAttributeComparison(id);
         if (revisions != null) {
             return new ResponseEntity(revisions, HttpStatus.OK);
         } else {

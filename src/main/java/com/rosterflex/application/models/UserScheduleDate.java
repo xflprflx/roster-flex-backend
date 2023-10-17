@@ -2,6 +2,8 @@ package com.rosterflex.application.models;
 
 import com.rosterflex.application.models.pk.UserScheduleDatePK;
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.util.HashSet;
 import java.util.Objects;

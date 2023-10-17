@@ -1,19 +1,23 @@
 package com.rosterflex.application.controllers;
 
 
-import com.rosterflex.application.dtos.ScheduleTypeDTO;
+import com.rosterflex.application.dtos.RevisionDataDTO;
 import com.rosterflex.application.dtos.TurnDTO;
-import com.rosterflex.application.services.ScheduleTypeService;
+import com.rosterflex.application.models.EntityWithRevision;
+import com.rosterflex.application.models.Turn;
+import com.rosterflex.application.services.RevisionService;
 import com.rosterflex.application.services.TurnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/turns")
@@ -21,6 +25,9 @@ public class TurnController {
 
     @Autowired
     private TurnService turnService;
+
+    @Autowired
+    private RevisionService revisionService;
 
     @GetMapping
     public ResponseEntity<Page<TurnDTO>> findAll(Pageable pageable){
@@ -54,5 +61,25 @@ public class TurnController {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         turnService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/revisions/{id}")
+    public ResponseEntity<List<EntityWithRevision<Turn>>> getRevisions(@PathVariable Long id) {
+        List<EntityWithRevision<Turn>> revisions = revisionService.getRevisions(id, Turn.class);
+        if (revisions != null) {
+            return new ResponseEntity(revisions, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/auditData/{id}")
+    public ResponseEntity<List<RevisionDataDTO>> getRevisionsWithAttributeComparison(@PathVariable Long id) {
+        List<RevisionDataDTO> revisions = revisionService.getRevisionsWithAttributeComparison(id, Turn.class);
+        if (revisions != null) {
+            return new ResponseEntity(revisions, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.rosterflex.application.models;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

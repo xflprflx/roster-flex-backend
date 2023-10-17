@@ -1,6 +1,12 @@
 package com.rosterflex.application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rosterflex.application.models.Team;
+import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.models.User;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,6 +16,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO implements Serializable {
     private static  final long serialVersionUID =1L;
 
@@ -23,7 +30,6 @@ public class UserDTO implements Serializable {
     @Email(message = "E-mail inválido")
     private String email;
     private String imgUrl;
-
     Set<RoleDTO> roles = new HashSet<>();
 
     public UserDTO() {

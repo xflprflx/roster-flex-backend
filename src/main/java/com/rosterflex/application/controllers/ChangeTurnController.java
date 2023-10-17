@@ -1,10 +1,8 @@
 package com.rosterflex.application.controllers;
 
 
-import com.rosterflex.application.dtos.UserDTO;
-import com.rosterflex.application.dtos.UserInsertDTO;
-import com.rosterflex.application.dtos.UserUpdateDTO;
-import com.rosterflex.application.services.UserService;
+import com.rosterflex.application.dtos.ChangeTurnDTO;
+import com.rosterflex.application.services.ChangeTurnService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,47 +14,41 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/changeTurns")
+public class ChangeTurnController {
 
     @Autowired
-    private UserService userService;
+    private ChangeTurnService changeTurnService;
 
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable){
-        Page<UserDTO> page = userService.findAllPaged(pageable);
+    public ResponseEntity<Page<ChangeTurnDTO>> findAll(Pageable pageable){
+        Page<ChangeTurnDTO> page = changeTurnService.findAllPaged(pageable);
         return ResponseEntity.ok().body(page);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable Long id){
-        UserDTO dto = userService.findById(id);
-        return ResponseEntity.ok().body(dto);
-    }
-
-    @GetMapping(value = "/me")
-    public ResponseEntity<UserDTO> findMe(){
-        UserDTO dto = userService.findMe();
+    public ResponseEntity<ChangeTurnDTO> findById(@PathVariable Long id){
+        ChangeTurnDTO dto = changeTurnService.findById(id);
         return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping()
-    public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto){
-        UserDTO newDto = userService.insert(dto);
+    public ResponseEntity<ChangeTurnDTO> insert(@Valid @RequestBody ChangeTurnDTO dto){
+        ChangeTurnDTO newDto = changeTurnService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newDto.getId()).toUri();
         return ResponseEntity.created(uri).body(newDto);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto){
-        UserDTO newDto = userService.update(id, dto);
+    public ResponseEntity<ChangeTurnDTO> update(@PathVariable Long id, @Valid @RequestBody ChangeTurnDTO dto){
+        ChangeTurnDTO newDto = changeTurnService.update(id, dto);
         return ResponseEntity.ok().body(newDto);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        userService.delete(id);
+        changeTurnService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

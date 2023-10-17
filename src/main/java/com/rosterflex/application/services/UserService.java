@@ -5,9 +5,13 @@ import com.rosterflex.application.dtos.UserDTO;
 import com.rosterflex.application.dtos.UserInsertDTO;
 import com.rosterflex.application.dtos.UserUpdateDTO;
 import com.rosterflex.application.models.Role;
+import com.rosterflex.application.models.Team;
+import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.models.User;
 import com.rosterflex.application.projections.UserDetailsProjection;
 import com.rosterflex.application.repositories.RoleRepository;
+import com.rosterflex.application.repositories.TeamRepository;
+import com.rosterflex.application.repositories.TurnRepository;
 import com.rosterflex.application.repositories.UserRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
@@ -16,10 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +54,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
+    public UserDTO findMe() {
+        User user = authenticated();
+        return new UserDTO(user);
+    }
+
+    @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
         Optional<User> obj = userRepository.findById(id);
-        User user = obj.orElseThrow(() -> new ResourceNotFoundException("Tipo de escala não localizada."));
+        User user = obj.orElseThrow(() -> new ResourceNotFoundException("Recurso não localizado."));
         return new UserDTO(user);
     }
 
@@ -86,7 +100,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
     private void copyDtoToEntity(UserDTO dto, User entity) {
         entity.setUsername(dto.getUsername());
         entity.setFullName(dto.getFullName());
@@ -94,7 +107,7 @@ public class UserService implements UserDetailsService {
         entity.setImgUrl(dto.getImgUrl());
         entity.getRoles().clear();
         for (RoleDTO roleDto : dto.getRoles()) {
-            Role role = roleRepository.getOne(roleDto.getId());
+            Role role = roleRepository.getReferenceById(roleDto.getId());
             entity.getRoles().add(role);
         }
     }
@@ -112,5 +125,17 @@ public class UserService implements UserDetailsService {
             user.addRole(new Role(projection.getRoleId(), projection.getAuthority()));
         }
         return user;
+    }
+
+    public User authenticated() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+            String username = jwtPrincipal.getClaim("username");
+            return userRepository.findByUsername(username);
+        }
+        catch (Exception e) {
+            throw new UsernameNotFoundException("Invalid user");
+        }
     }
 }

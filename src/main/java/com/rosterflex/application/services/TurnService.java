@@ -2,22 +2,32 @@ package com.rosterflex.application.services;
 
 import com.rosterflex.application.dtos.ScheduleTypeDTO;
 import com.rosterflex.application.dtos.TurnDTO;
+import com.rosterflex.application.dtos.UserDTO;
+import com.rosterflex.application.models.EntityWithRevision;
+import com.rosterflex.application.models.Revision;
 import com.rosterflex.application.models.ScheduleType;
 import com.rosterflex.application.models.Turn;
+import com.rosterflex.application.repositories.GenericRevisionRepository;
 import com.rosterflex.application.repositories.ScheduleTypeRepository;
 import com.rosterflex.application.repositories.TurnRepository;
+import com.rosterflex.application.repositories.UserRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
 import com.rosterflex.application.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.envers.RevisionType;
 import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +37,7 @@ public class TurnService {
     private TurnRepository turnRepository;
 
     @Transactional(readOnly = true)
-    public Page<TurnDTO> findAllPaged(Pageable pageable){
+    public Page<TurnDTO> findAllPaged(Pageable pageable) {
         Page<Turn> page = turnRepository.findAll(pageable);
         return page.map(x -> new TurnDTO(x));
     }

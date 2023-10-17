@@ -1,6 +1,7 @@
 package com.rosterflex.application.models;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,6 +26,16 @@ public class User implements Serializable, UserDetails {
     private String email;
     private String password;
     private String imgUrl;
+    @ManyToOne
+    @JoinColumn(name = "schedule_type_id")
+    private ScheduleType scheduleType;
+
+    @OneToMany(mappedBy = "id.user")
+    private Set<UserScheduleDate> userScheduleDates = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "turn_id")
+    private Turn turn;
 
     @ManyToMany
     @JoinTable(name = "tb_user_role",
@@ -32,16 +43,22 @@ public class User implements Serializable, UserDetails {
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
     public User() {
     }
 
-    public User(Long id, String username, String fullName, String email, String password, String imgUrl) {
+    public User(Long id, String username, String fullName, String email, String password, String imgUrl, Turn turn, ScheduleType scheduleType) {
         this.id = id;
         this.username = username;
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.imgUrl = imgUrl;
+        this.turn = turn;
+        this.scheduleType = scheduleType;
     }
 
     public Long getId() {
@@ -95,6 +112,34 @@ public class User implements Serializable, UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Turn getTurn() {
+        return turn;
+    }
+
+    public void setTurn(Turn turn) {
+        this.turn = turn;
+    }
+
+    public ScheduleType getScheduleType() {
+        return scheduleType;
+    }
+
+    public void setScheduleType(ScheduleType scheduleType) {
+        this.scheduleType = scheduleType;
+    }
+
+    public Set<UserScheduleDate> getUserScheduleDates() {
+        return userScheduleDates;
     }
 
     @Override

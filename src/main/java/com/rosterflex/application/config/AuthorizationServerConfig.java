@@ -109,6 +109,7 @@ public class AuthorizationServerConfig {
                 .scope("read")
                 .scope("write")
                 .authorizationGrantType(new AuthorizationGrantType("password"))
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .tokenSettings(tokenSettings())
                 .clientSettings(clientSettings())
                 .build();
@@ -123,6 +124,7 @@ public class AuthorizationServerConfig {
         return TokenSettings.builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                 .accessTokenTimeToLive(Duration.ofSeconds(jwtDurationSeconds))
+                .refreshTokenTimeToLive(Duration.ofHours(24))
                 .build();
         // @formatter:on
     }

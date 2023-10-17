@@ -39,6 +39,9 @@ public class TurnService {
     @Autowired
     private GenericRevisionRepository genericRevisionRepository;
 
+    @Autowired
+    private RevisionService revisionService;
+
     @Transactional(readOnly = true)
     public Page<TurnDTO> findAllPaged(Pageable pageable) {
         Page<Turn> page = turnRepository.findAll(pageable);
@@ -82,78 +85,6 @@ public class TurnService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
         }
-    }
-
-    public List<EntityWithRevision<Turn>> getRevisions(Long id) {
-        List<EntityWithRevision<Turn>> revisions = genericRevisionRepository.revisionList(id, Turn.class);
-        if (revisions != null) {
-            for (EntityWithRevision revision : revisions) {
-                if (revision == revisions.get(0)) {
-                    revision.getRevision().setRevisionType(RevisionType.ADD);
-                } else {
-                    revision.getRevision().setRevisionType(genericRevisionRepository.getRevisionType(Turn.class, id, revision.getRevision().getRevisionId()));
-                }
-            }
-            return revisions;
-        } else {
-            return null;
-        }
-    }
-
-    public List<RevisionDataDTO> getRevisionsWithAttributeComparison(Long id) {
-        List<EntityWithRevision<Turn>> revisions = getRevisions(id);
-        List<RevisionDataDTO> revisionDataDTOS = new ArrayList<>();
-
-        for (int i = 0; i < revisions.size(); i++) {
-            EntityWithRevision<Turn> actualRevision = revisions.get(i);
-            EntityWithRevision<Turn> previousRevision;
-            if (i != 0){
-                previousRevision = revisions.get(i - 1);
-            } else {
-                previousRevision = null;
-            }
-
-            RevisionDataDTO revisionDataDTO = new RevisionDataDTO();
-            revisionDataDTO.setId(actualRevision.getRevision().getRevisionId());
-            revisionDataDTO.setRevisionMoment(actualRevision.getRevision().getRevisionDate());
-            revisionDataDTO.setRevisionAuthor(actualRevision.getRevision().getUsername());
-            revisionDataDTO.setRevisionType(actualRevision.getRevision().getRevisionType().toString());
-
-            Field[] attributes = actualRevision.getEntity().getClass().getDeclaredFields();
-            for (Field attribute : attributes){
-                attribute.setAccessible(true);
-                Object oldValue = null;
-                Object newValue = null;
-
-                String attributeName = attribute.getName();
-
-                // Verifique se o atributo deve ser ignorado
-                if (attributeName.equals("serialVersionUID")) {
-                    continue; // Ignora este atributo e passa para o próximo
-                }
-
-                try {
-                    if(previousRevision != null){
-                        oldValue = attribute.get(previousRevision.getEntity());
-                    } else {
-                        oldValue = "";
-                    }
-                    newValue = attribute.get(actualRevision.getEntity());
-
-                    if(oldValue != null && !oldValue.equals(newValue)){
-                        var revisionEditedFieldDTO = new RevisionEditedFieldDTO();
-                        revisionEditedFieldDTO.setField(attribute.getName());
-                        revisionEditedFieldDTO.setOldValue(oldValue.toString());
-                        revisionEditedFieldDTO.setNewValue(newValue.toString());
-                        revisionDataDTO.getEditedFieldDTOS().add(revisionEditedFieldDTO);
-                    }
-                }catch (IllegalAccessException e){
-                    e.printStackTrace();
-                }
-            }
-            revisionDataDTOS.add(revisionDataDTO);
-        }
-        return revisionDataDTOS;
     }
 
     private void copyDtoToEntity(TurnDTO dto, Turn entity) {

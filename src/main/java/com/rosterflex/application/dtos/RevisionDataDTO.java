@@ -1,8 +1,5 @@
 package com.rosterflex.application.dtos;
 
-import jakarta.persistence.OneToMany;
-
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +11,7 @@ public class RevisionDataDTO {
     private String revisionAuthor;
     private String revisionType;
 
-    private Set<RevisionEditedFieldDTO> editedFieldDTOS = new HashSet<>();
+    private Set<RevisionEditedFieldDTO> editedFields = new HashSet<>();
 
     public RevisionDataDTO() {
     }
@@ -58,7 +55,7 @@ public class RevisionDataDTO {
         this.revisionType = revisionType;
     }
 
-    public Set<RevisionEditedFieldDTO> getEditedFieldDTOS() {
-        return editedFieldDTOS;
+    public Set<RevisionEditedFieldDTO> getEditedFields() {
+        return editedFields;
     }
 }

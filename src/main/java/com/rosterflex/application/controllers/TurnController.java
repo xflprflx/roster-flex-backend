@@ -5,8 +5,8 @@ import com.rosterflex.application.dtos.RevisionDataDTO;
 import com.rosterflex.application.dtos.TurnDTO;
 import com.rosterflex.application.models.EntityWithRevision;
 import com.rosterflex.application.models.Turn;
+import com.rosterflex.application.services.RevisionService;
 import com.rosterflex.application.services.TurnService;
-import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +25,9 @@ public class TurnController {
 
     @Autowired
     private TurnService turnService;
+
+    @Autowired
+    private RevisionService revisionService;
 
     @GetMapping
     public ResponseEntity<Page<TurnDTO>> findAll(Pageable pageable){
@@ -62,7 +65,7 @@ public class TurnController {
 
     @GetMapping("/revisions/{id}")
     public ResponseEntity<List<EntityWithRevision<Turn>>> getRevisions(@PathVariable Long id) {
-        List<EntityWithRevision<Turn>> revisions = turnService.getRevisions(id);
+        List<EntityWithRevision<Turn>> revisions = revisionService.getRevisions(id, Turn.class);
         if (revisions != null) {
             return new ResponseEntity(revisions, HttpStatus.OK);
         } else {
@@ -70,9 +73,9 @@ public class TurnController {
         }
     }
 
-    @GetMapping("/revisionsDTO/{id}")
+    @GetMapping("/auditData/{id}")
     public ResponseEntity<List<RevisionDataDTO>> getRevisionsWithAttributeComparison(@PathVariable Long id) {
-        List<RevisionDataDTO> revisions = turnService.getRevisionsWithAttributeComparison(id);
+        List<RevisionDataDTO> revisions = revisionService.getRevisionsWithAttributeComparison(id, Turn.class);
         if (revisions != null) {
             return new ResponseEntity(revisions, HttpStatus.OK);
         } else {

@@ -36,11 +36,8 @@ public class TurnService {
     @Autowired
     private TurnRepository turnRepository;
 
-    @Autowired
-    private GenericRevisionRepository genericRevisionRepository;
-
     @Transactional(readOnly = true)
-    public Page<TurnDTO> findAllPaged(Pageable pageable){
+    public Page<TurnDTO> findAllPaged(Pageable pageable) {
         Page<Turn> page = turnRepository.findAll(pageable);
         return page.map(x -> new TurnDTO(x));
     }
@@ -82,22 +79,6 @@ public class TurnService {
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
-        }
-    }
-
-    public List<EntityWithRevision<Turn>> getRevisions(Long id) {
-        List<EntityWithRevision<Turn>> revisions = genericRevisionRepository.revisionList(id, Turn.class);
-        if (revisions != null) {
-            for (EntityWithRevision revision : revisions) {
-                if (revision==revisions.get(0)){
-                    revision.getRevision().setRevisionType(RevisionType.ADD);
-                } else {
-                    revision.getRevision().setRevisionType(genericRevisionRepository.getRevisionType(Turn.class, id, revision.getRevision().getRevisionId()));
-                }
-            }
-            return revisions;
-        } else {
-            return null;
         }
     }
 

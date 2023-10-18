@@ -35,8 +35,8 @@ public class WorkScheduleController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
-    public ResponseEntity<WorkScheduleDTO> insert(@RequestBody WorkScheduleDTO dto){
-        dto = workScheduleService.insert(dto);
+    public ResponseEntity<WorkScheduleDTO> insert(@RequestBody WorkScheduleDTO dto, @RequestParam Long userId){
+        dto = workScheduleService.insert(dto, userId);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);

@@ -1,6 +1,7 @@
 package com.rosterflex.application.controllers;
 
 
+import com.rosterflex.application.dtos.UserDTO;
 import com.rosterflex.application.dtos.WorkScheduleDTO;
 import com.rosterflex.application.services.WorkScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class WorkScheduleController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
-    public ResponseEntity<WorkScheduleDTO> insert(@RequestBody WorkScheduleDTO dto){
-        dto = workScheduleService.insert(dto);
+    public ResponseEntity<WorkScheduleDTO> insert(@RequestBody WorkScheduleDTO dto, @RequestParam Long userId){
+        dto = workScheduleService.insert(dto, userId);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);

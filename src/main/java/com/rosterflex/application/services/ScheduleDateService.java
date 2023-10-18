@@ -1,11 +1,9 @@
 package com.rosterflex.application.services;
 
 import com.rosterflex.application.dtos.ScheduleDateDTO;
+import com.rosterflex.application.dtos.UserDTO;
 import com.rosterflex.application.dtos.UserScheduleDateDTO;
-import com.rosterflex.application.models.ScheduleDate;
-import com.rosterflex.application.models.Turn;
-import com.rosterflex.application.models.User;
-import com.rosterflex.application.models.UserScheduleDate;
+import com.rosterflex.application.models.*;
 import com.rosterflex.application.models.pk.UserScheduleDatePK;
 import com.rosterflex.application.repositories.ScheduleDateRepository;
 import com.rosterflex.application.repositories.TurnRepository;
@@ -25,7 +23,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ScheduleDateService {
@@ -45,14 +47,14 @@ public class ScheduleDateService {
     @Transactional(readOnly = true)
     public Page<ScheduleDateDTO> findAllPaged(Pageable pageable){
         Page<ScheduleDate> page = scheduleDateRepository.findAll(pageable);
-        return page.map(x -> new ScheduleDateDTO(x));
+        return page.map(scheduleDate -> new ScheduleDateDTO(scheduleDate, scheduleDate.getUserScheduleDates()));
     }
 
     @Transactional(readOnly = true)
     public ScheduleDateDTO findById(Long id) {
         Optional<ScheduleDate> obj = scheduleDateRepository.findById(id);
         ScheduleDate scheduleDate = obj.orElseThrow(() -> new ResourceNotFoundException("Recurso não localizada."));
-        return new ScheduleDateDTO(scheduleDate);
+        return new ScheduleDateDTO(scheduleDate, scheduleDate.getUserScheduleDates());
     }
 
     @Transactional
@@ -108,4 +110,46 @@ public class ScheduleDateService {
         }
     }
 
+    @Transactional
+    public Set<LocalDate> createRangeScheduleDates(LocalDate initialDate, LocalDate finalDate, Long userId) {
+        Set<LocalDate> existingDates = generateDateRange(initialDate, finalDate);
+        User user = userRepository.getReferenceById(userId);
+        processScheduleForUser(user, existingDates);
+        return existingDates;
+    }
+
+    private Set<LocalDate> generateDateRange(LocalDate initialDate, LocalDate finalDate) {
+        Set<LocalDate> dates = new TreeSet<>();
+        while (!initialDate.isAfter(finalDate)) {
+            dates.add(initialDate);
+            initialDate = initialDate.plusDays(1);
+        }
+        return dates;
+    }
+
+    private void processScheduleForUser(User user, Set<LocalDate> existingDates) {
+        Double workedTime = user.getScheduleType().getWorkedTime();
+        Double freeTime = user.getScheduleType().getFreeTime();
+        Double workedTimeAux = workedTime;
+        Double freeTimeAux = freeTime;
+
+        for (LocalDate date : existingDates) {
+            if (workedTimeAux == 0) {
+                freeTimeAux--;
+                if (freeTimeAux == 0) {
+                    workedTimeAux = workedTime;
+                }
+                continue;
+            }
+
+            ScheduleDate scheduleDate = scheduleDateRepository.findByDate(date);
+
+            if (scheduleDate == null) {
+                scheduleDate = scheduleDateRepository.save(new ScheduleDate(null, date, false));
+            }
+
+            userScheduleDateRepository.save(new UserScheduleDate(user, scheduleDate, user.getTurn()));
+            workedTimeAux--;
+        }
+    }
 }

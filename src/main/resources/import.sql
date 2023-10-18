@@ -12,8 +12,9 @@ INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('08:00', '
 INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('12:00', '00:00', '01:00');
 INSERT INTO tb_turn (start_time, end_time, interval_duration) VALUES ('08:00', '20:00', '01:30');
 
-INSERT INTO tb_user(username, full_name, email, password, img_url, team_id, turn_id) VALUES ('xflprflx', 'Filipe Rafael Pereira Machado', 'x.filipe.machado.x@gmail.com', '$2a$12$UQHHFTS7Z3UzWEb.fxe8M.Q7yrX/Jn/ZSL4Z5Xo9s1Ga0lE0hd/k.', 'https://media.licdn.com/dms/image/D4D35AQE_ULBBuNRWmQ/profile-framedphoto-shrink_200_200/0/1687561178954?e=1696464000&v=beta&t=blgVYs3Fgl7zsXqxZSEjndRhEPtCpdGsijyHmFYVGro', 1, 1);
-INSERT INTO tb_user(username, full_name, email, password, img_url, team_id, turn_id) VALUES ('mari', 'Mariana Bedin Santos', 'maribedin@gmail.com', '$2a$12$q1t3ayHzQ2BTJVzGFgnbzeWRfCyE5VS1drNP/aZqxdlBQE9Ew0KXm', 'https://media.licdn.com/dms/image/D4D03AQG8jT3QNbXq6g/profile-displayphoto-shrink_800_800/0/1690940089731?e=1701302400&v=beta&t=Lj4Rxlr86R0etWOgbJcuWUvv0igx50TpO41yYknfKoo', 1, 2);
+
+INSERT INTO tb_user(username, full_name, email, password, img_url, team_id, turn_id, schedule_type_id) VALUES ('xflprflx', 'Filipe Rafael Pereira Machado', 'x.filipe.machado.x@gmail.com', '$2a$12$UQHHFTS7Z3UzWEb.fxe8M.Q7yrX/Jn/ZSL4Z5Xo9s1Ga0lE0hd/k.', 'https://media.licdn.com/dms/image/D4D35AQE_ULBBuNRWmQ/profile-framedphoto-shrink_200_200/0/1687561178954?e=1696464000&v=beta&t=blgVYs3Fgl7zsXqxZSEjndRhEPtCpdGsijyHmFYVGro', 1, 1, 2);
+INSERT INTO tb_user(username, full_name, email, password, img_url, team_id, turn_id, schedule_type_id) VALUES ('mari', 'Mariana Bedin Santos', 'maribedin@gmail.com', '$2a$12$q1t3ayHzQ2BTJVzGFgnbzeWRfCyE5VS1drNP/aZqxdlBQE9Ew0KXm', 'https://media.licdn.com/dms/image/D4D03AQG8jT3QNbXq6g/profile-displayphoto-shrink_800_800/0/1690940089731?e=1701302400&v=beta&t=Lj4Rxlr86R0etWOgbJcuWUvv0igx50TpO41yYknfKoo', 1, 2, 3);
 
 UPDATE tb_team SET manager_id = 1 WHERE id = 1;
 UPDATE tb_team SET manager_id = 2 WHERE id = 2;

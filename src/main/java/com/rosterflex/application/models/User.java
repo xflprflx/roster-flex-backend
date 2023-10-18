@@ -26,6 +26,7 @@ public class User implements Serializable, UserDetails {
     private String email;
     private String password;
     private String imgUrl;
+
     @ManyToOne
     @JoinColumn(name = "schedule_type_id")
     private ScheduleType scheduleType;

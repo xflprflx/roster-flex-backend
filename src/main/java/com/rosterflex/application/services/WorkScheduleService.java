@@ -23,6 +23,9 @@ public class WorkScheduleService {
     @Autowired
     private WorkScheduleRepository workScheduleRepository;
 
+    @Autowired
+    private ScheduleDateService scheduleDateService;
+
     @Transactional(readOnly = true)
     public Page<WorkScheduleDTO> findAllPaged(Pageable pageable){
         Page<WorkSchedule> page = workScheduleRepository.findAll(pageable);
@@ -37,10 +40,11 @@ public class WorkScheduleService {
     }
 
     @Transactional
-    public WorkScheduleDTO insert(WorkScheduleDTO dto) {
+    public WorkScheduleDTO insert(WorkScheduleDTO dto, Long userid) {
         WorkSchedule workSchedule = new WorkSchedule();
         copyDtoToEntity(dto, workSchedule);
         workSchedule = workScheduleRepository.save(workSchedule);
+        scheduleDateService.createRangeScheduleDates(workSchedule.getInitialDate(), workSchedule.getFinalDate(), userid);
         return new WorkScheduleDTO(workSchedule);
     }
 

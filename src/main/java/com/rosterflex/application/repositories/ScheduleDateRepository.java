@@ -10,4 +10,5 @@ import java.time.LocalDate;
 public interface ScheduleDateRepository extends JpaRepository<ScheduleDate, Long> {
 
     boolean existsByDate(LocalDate date);
+    ScheduleDate findByDate(LocalDate date);
 }

@@ -1,15 +1,9 @@
 package com.rosterflex.application.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rosterflex.application.models.Team;
-import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.models.User;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package com.rosterflex.application.dtos;
 
-import com.rosterflex.application.models.User;
+import com.rosterflex.application.services.validation.PasswordValid;
 import com.rosterflex.application.services.validation.UserInsertValid;
 import jakarta.validation.constraints.NotNull;
 
@@ -9,6 +9,7 @@ public class UserInsertDTO extends UserDTO {
     private static  final long serialVersionUID =1L;
 
     @NotNull
+    @PasswordValid
     private String password;
 
     public UserInsertDTO() {

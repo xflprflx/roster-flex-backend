@@ -1,6 +1,8 @@
 package com.rosterflex.application.dtos;
 
 import com.rosterflex.application.models.ScheduleType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
@@ -10,7 +12,9 @@ public class ScheduleTypeDTO implements Serializable {
 
     private Long id;
     private String name;
+    @NotBlank
     private Double workedTime;
+    @NotBlank
     private Double freeTime;
     private ChronoUnit unity;
     private Integer monthlyHours;

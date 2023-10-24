@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rosterflex.application.models.Team;
 import com.rosterflex.application.models.TeamRole;
 import com.rosterflex.application.models.User;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ public class TeamDTO implements Serializable {
     private static  final long serialVersionUID =1L;
 
     private Long id;
+    @NotBlank(message = "Campo obrigatório.")
     private String name;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserDTO manager;

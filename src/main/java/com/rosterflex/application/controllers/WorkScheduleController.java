@@ -3,6 +3,7 @@ package com.rosterflex.application.controllers;
 
 import com.rosterflex.application.dtos.WorkScheduleDTO;
 import com.rosterflex.application.services.WorkScheduleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class WorkScheduleController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
-    public ResponseEntity<WorkScheduleDTO> insert(@RequestBody WorkScheduleDTO dto, @RequestParam Long userId){
+    public ResponseEntity<WorkScheduleDTO> insert(@Valid @RequestBody WorkScheduleDTO dto, @RequestParam Long userId){
         dto = workScheduleService.insert(dto, userId);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();

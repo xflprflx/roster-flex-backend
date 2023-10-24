@@ -3,6 +3,7 @@ package com.rosterflex.application.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rosterflex.application.models.Turn;
 import com.rosterflex.application.models.User;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -13,8 +14,11 @@ public class TurnDTO implements Serializable {
     private static  final long serialVersionUID =1L;
 
     private Long id;
+    @NotBlank
     private LocalTime startTime;
+    @NotBlank
     private LocalTime endTime;
+    @NotBlank
     private LocalTime intervalDuration;
 
     public TurnDTO() {

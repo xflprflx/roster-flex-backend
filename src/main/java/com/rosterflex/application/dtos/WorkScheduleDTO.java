@@ -2,6 +2,9 @@ package com.rosterflex.application.dtos;
 
 import com.rosterflex.application.enums.ScheduleStatus;
 import com.rosterflex.application.models.WorkSchedule;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,8 +13,11 @@ public class WorkScheduleDTO implements Serializable {
     private static  final long serialVersionUID =1L;
 
     private Long id;
+    @FutureOrPresent
     private LocalDate initialDate;
+    @Future
     private LocalDate finalDate;
+    @NotBlank
     private String description;
     private ScheduleStatus scheduleStatus;
 

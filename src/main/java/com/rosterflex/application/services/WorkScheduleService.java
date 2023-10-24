@@ -1,6 +1,7 @@
 package com.rosterflex.application.services;
 
 import com.rosterflex.application.dtos.WorkScheduleDTO;
+import com.rosterflex.application.enums.ScheduleStatus;
 import com.rosterflex.application.models.WorkSchedule;
 import com.rosterflex.application.repositories.WorkScheduleRepository;
 import com.rosterflex.application.services.exceptions.DatabaseException;
@@ -43,6 +44,9 @@ public class WorkScheduleService {
     public WorkScheduleDTO insert(WorkScheduleDTO dto, Long userid) {
         WorkSchedule workSchedule = new WorkSchedule();
         copyDtoToEntity(dto, workSchedule);
+        if (workSchedule.getScheduleStatus() == null) {
+            workSchedule.setScheduleStatus(ScheduleStatus.IN_PLANNING);
+        }
         workSchedule = workScheduleRepository.save(workSchedule);
         scheduleDateService.createRangeScheduleDates(workSchedule.getInitialDate(), workSchedule.getFinalDate(), userid);
         return new WorkScheduleDTO(workSchedule);
